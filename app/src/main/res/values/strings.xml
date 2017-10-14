@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Book rental</string>
+    <string name="czas">Czas:</string>
+    <string name="addBook">Add book</string>
+    <string name="removeBook">Remove book</string>
+    <string name="borrowBook">Borrow book</string>
+    <string name="returnBook">Return book</string>
+    <string name="exit">Exit</string>
+    <string name="about">About</string>
 </resources>
