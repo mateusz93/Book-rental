@@ -7,9 +7,9 @@ TODO:
 -		sprawdzenie dostępności książki w bibliotece
 -Zaprojektowanie modeli obiektów tj. Użytkownik, Książka
 -Zaprojektowanie struktury bazy danych
--Logowanie do aplikacji
--Rejestracja w aplikacji
 
 DONE:
 -Konfiguracja wstępna projektu
 -Konfiguracja firebase'a
+-Logowanie do aplikacji
+-Rejestracja w aplikacji
