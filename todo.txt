@@ -1,0 +1,15 @@
+TODO:
+-Funkcjonalność dodawania książek / bibliotekarz
+-   	usuwania książek / bibliotekarz
+-		wypożyczania książek / bibliotekarz
+-		zwracania książek / bibliotekarz
+-		sprawdzenia "salda" konta czyli ile książek wypożyczonych aktualnie itp. / student
+-		sprawdzenie dostępności książki w bibliotece
+-Zaprojektowanie modeli obiektów tj. Użytkownik, Książka
+-Zaprojektowanie struktury bazy danych
+-Logowanie do aplikacji
+-Rejestracja w aplikacji
+
+DONE:
+-Konfiguracja wstępna projektu
+-Konfiguracja firebase'a
