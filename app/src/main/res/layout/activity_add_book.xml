@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical">
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/AddBookTitleLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/addBookTitle"
+            android:textSize="10pt">
+        </TextView>
+
+        <EditText
+            android:id="@+id/AddBookAuthorEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/addBookAuthorHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <EditText
+            android:id="@+id/AddBookTitleEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/addBookTitleHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <EditText
+            android:id="@+id/AddBookYearEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/addBookYearHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <Button
+            android:id="@+id/AddBookSubmit"
+            android:layout_height="wrap_content"
+            android:text="@string/addBookSubmitText"
+            android:onClick="submitListener"
+            android:layout_width="fill_parent">
+        </Button>
+
+    </LinearLayout>
+</ScrollView>

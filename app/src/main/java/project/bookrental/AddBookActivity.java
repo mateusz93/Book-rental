@@ -1,14 +1,23 @@
 package project.bookrental;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import project.bookrental.models.BookModel;
 
 
 /**
@@ -17,11 +26,15 @@ import com.google.firebase.database.ValueEventListener;
 
 public class AddBookActivity extends AppCompatActivity {
 
+    EditText authorEditText, titleEditText, yearEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // TODO: add separate views for every Activity
-        workOnDatabase();
+        setContentView(R.layout.activity_add_book); // TODO: add separate views for every Activity        inputEmail = (EditText) findViewById(R.id.email);
+        authorEditText = (EditText) findViewById(R.id.AddBookAuthorEditText);
+        titleEditText = (EditText) findViewById(R.id.AddBookTitleEditText);
+        yearEditText = (EditText) findViewById(R.id.AddBookYearEditText);
     }
 
     void workOnDatabase() {
@@ -41,5 +54,45 @@ public class AddBookActivity extends AppCompatActivity {
         });
         Log.d("BEFORE MESSAGE","zapisujemy!");
         myRef.setValue("Hello, World!");
+    }
+
+    public void submitListener(View view) {
+        Map<String,String> validationErrors = new HashMap<>();
+        String author = authorEditText.getText().toString();
+        String title = titleEditText.getText().toString();
+        String rawYear = yearEditText.getText().toString();
+        if(author.isEmpty()){
+            validationErrors.put("author","Author field cannot be empty!");
+        } else if(author.split(" ").length != 2 || author.matches(".*\\d+.*")) {
+            validationErrors.put("author","Invalid format on author field!Expected \"[name] [surname(s)]\"");
+        }
+        if(title.isEmpty()) {
+            validationErrors.put("title","Title field cannot be empty!");
+        }
+        if(rawYear.isEmpty()) {
+            validationErrors.put("year", "Year field cannot be empty!");
+        } else {
+            try {
+                Integer year = Integer.parseInt(rawYear);
+                int currentYear = new Date().getYear() + 1900;
+                if (year < 1000 || year > currentYear) {
+                    validationErrors.put("year", "Expected year from range 1000 <= year <= " + currentYear);
+                } else if (validationErrors.size() == 0) {
+                    BookModel book = new BookModel(author, title, year);
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference myRef = database.getReference("books");
+                    myRef.push().setValue(book);
+                    Toast.makeText(getApplicationContext(), "Book added to database!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            } catch (NumberFormatException nfe) {
+                validationErrors.put("year", "Invalid format of year!");
+            }
+        }
+        if(validationErrors.size()!=0){
+            for(Map.Entry<String,String> entry : validationErrors.entrySet()){
+                Toast.makeText(getApplicationContext(), entry.getValue(), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 };

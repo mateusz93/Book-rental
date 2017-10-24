@@ -5,6 +5,7 @@ TODO:
 -		zwracania książek / bibliotekarz
 -		sprawdzenia "salda" konta czyli ile książek wypożyczonych aktualnie itp. / student
 -		sprawdzenie dostępności książki w bibliotece
+-       lista książek / obie role
 -Zaprojektowanie modeli obiektów tj. Użytkownik, Książka
 -Zaprojektowanie struktury bazy danych
 
@@ -13,3 +14,4 @@ DONE:
 -Konfiguracja firebase'a
 -Logowanie do aplikacji
 -Rejestracja w aplikacji
+-Rozwiązać i zaimplementować kwestię przydziału ról (admin/student) do użytkowników
