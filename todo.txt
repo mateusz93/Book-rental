@@ -1,4 +1,4 @@
-TODO:
+﻿TODO:
 -Funkcjonalność dodawania książek / bibliotekarz
 -   	usuwania książek / bibliotekarz
 -		wypożyczania książek / bibliotekarz
@@ -15,3 +15,18 @@ DONE:
 -Logowanie do aplikacji
 -Rejestracja w aplikacji
 -Rozwiązać i zaimplementować kwestię przydziału ról (admin/student) do użytkowników
+
+
+
+Example data for testing: SafariBooks Downloader
+https://github.com/nicohaenggi/SafariBooks-Downloader
+
+Roles:
+-student -> registering (email with suffix p.lodz.pl, confirme by click on link on email box), loging, access to book library, unique qr code, request for library buying the book
+reserve the book (24h), check account of borrowed and reserved books, cancel reservation, pay for overdue, destroy
+-admin -> how many copy of given book is in the library (add, remove), confirm borrowing and returnig books, 
+General requirements:
+giving id for every book, every book has qr code, discuss payments in app
+
+  
+we have to think about some errors like admin give student wrong book (the same title but with wrong id/qrcode).
