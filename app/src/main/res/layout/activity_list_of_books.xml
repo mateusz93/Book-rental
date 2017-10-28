@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".ListOfBooksActivity">
+
+        <EditText
+            android:id="@+id/ListOfBooksAuthorEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/ListOfBooksAuthorFilterHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <EditText
+            android:id="@+id/ListOfBooksTitleEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/ListOfBooksTitleFilterHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <EditText
+            android:id="@+id/ListOfBooksYearEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/ListOfBooksYearFilterHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <ProgressBar
+            android:id="@+id/ListOfBooksProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ListView
+            android:id="@+id/ListOfBooksListView"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent">
+        </ListView>
+
+    </LinearLayout>

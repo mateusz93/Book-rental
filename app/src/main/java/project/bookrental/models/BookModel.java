@@ -5,9 +5,18 @@ package project.bookrental.models;
  */
 
 public class BookModel {
+    private Long id;
     private String author;
     private String title;
     private Integer year;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getAuthor() {
         return author;
@@ -37,5 +46,17 @@ public class BookModel {
         this.author = author;
         this.title = title;
         this.year = year;
+    }
+
+    public BookModel(Long id, String author, String title, Integer year) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.year = year;
+    }
+
+    @Override
+    public String toString() {
+        return author + " \"" + title + "\" " + year;
     }
 }

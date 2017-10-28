@@ -78,12 +78,27 @@ public class AddBookActivity extends AppCompatActivity {
                 if (year < 1000 || year > currentYear) {
                     validationErrors.put("year", "Expected year from range 1000 <= year <= " + currentYear);
                 } else if (validationErrors.size() == 0) {
-                    BookModel book = new BookModel(author, title, year);
+                    final BookModel book = new BookModel(author, title, year);
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     final DatabaseReference myRef = database.getReference("books");
-                    myRef.push().setValue(book);
-                    Toast.makeText(getApplicationContext(), "Book added to database!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    final DatabaseReference counter = database.getReference("counter");
+                    counter.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            counter.removeEventListener(this);
+                            Long id = dataSnapshot.getValue(Long.class);
+                            book.setId(id);
+                            myRef.child(String.valueOf(id)).setValue(book);
+                            Toast.makeText(getApplicationContext(), "Book added to database!", Toast.LENGTH_SHORT).show();
+                            counter.setValue(++id);
+                            finish();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d("err:AddBookListene:93", databaseError.getMessage());
+                        }
+                    });
                 }
             } catch (NumberFormatException nfe) {
                 validationErrors.put("year", "Invalid format of year!");

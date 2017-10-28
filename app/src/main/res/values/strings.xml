@@ -26,4 +26,7 @@
     <string name="addBookYearHint">Enter year…</string>
     <string name="addBookSubmitText">Submit</string>
     <string name="listOfBooks">List of books</string>
+    <string name="ListOfBooksTitleFilterHint">Filter by contains in title field…</string>
+    <string name="ListOfBooksAuthorFilterHint">Filter by contains in author field…</string>
+    <string name="ListOfBooksYearFilterHint">Filter by contains in year field…</string>
 </resources>

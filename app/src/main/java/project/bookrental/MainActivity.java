@@ -77,13 +77,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void addOnClickListenersOnButtons() {
-        Integer[] buttonNames = new Integer[] {R.id.addBookButton,R.id.removeBookButton, R.id.borrowBookButton, R.id.returnBookButton, R.id.aboutButton};
+        Integer[] buttonNames = new Integer[] {R.id.listOfBooksButton, R.id.addBookButton,R.id.removeBookButton, R.id.borrowBookButton, R.id.returnBookButton, R.id.aboutButton};
         for (int i = 0; i < buttonNames.length; i++) {
             Button button = (Button)findViewById(buttonNames[i]);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     switch(v.getId()){
+                        case R.id.listOfBooksButton:
+                            startActivity(new Intent(MainActivity.this, ListOfBooksActivity.class));
+                            break;
                         case R.id.addBookButton:
                             startActivity(new Intent(MainActivity.this, AddBookActivity.class));
                             break;

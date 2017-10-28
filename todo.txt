@@ -1,4 +1,5 @@
 ﻿TODO:
+-send verification email functionality (here example: https://firebase.googleblog.com/2017/02/email-verification-in-firebase-auth.html)
 -giving id for every book, every book has own qrcode
 -discuss payments in app
 
