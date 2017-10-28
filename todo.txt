@@ -1,23 +1,31 @@
 ﻿TODO:
--Funkcjonalność dodawania książek / bibliotekarz
--   	usuwania książek / bibliotekarz
--		wypożyczania książek / bibliotekarz
--		zwracania książek / bibliotekarz
--		sprawdzenia "salda" konta czyli ile książek wypożyczonych aktualnie itp. / student
--		sprawdzenie dostępności książki w bibliotece
--       lista książek / obie role
--Zaprojektowanie modeli obiektów tj. Użytkownik, Książka
--Zaprojektowanie struktury bazy danych
+-giving id for every book, every book has own qrcode
+-discuss payments in app
 
+//Student
+-Fetching all testing data from SafariBook API
+-Add trigger which fetch book from SarabiBook API every day
+-access to book library (checking which books are available, which aren't available)
+-unique qr code
+-buy some new books request button
+-Borrowing and returning books functionality (which student, which book, from, to etc.)
+-reserve book (24h) / cancel reservation
+-check his account (how many books are borrowed already)
+-pay for overdue
+-handling with destroyed books
+
+//Admin
+-How many copy of given book is in the library (add,remove)
 DONE:
--Konfiguracja wstępna projektu
--Konfiguracja firebase'a
--Logowanie do aplikacji
--Rejestracja w aplikacji
--Rozwiązać i zaimplementować kwestię przydziału ról (admin/student) do użytkowników
+-Initially project configuration
+-Initial Firebase configuration
+-Login into application functionality
+-Register in application functionality (email with suffix p.lodz.pl, confirm by click on link on email box)
 
 
 
+
+/*
 Example data for testing: SafariBooks Downloader
 https://github.com/nicohaenggi/SafariBooks-Downloader
 
@@ -30,3 +38,4 @@ giving id for every book, every book has qr code, discuss payments in app
 
   
 we have to think about some errors like admin give student wrong book (the same title but with wrong id/qrcode).
+*/
