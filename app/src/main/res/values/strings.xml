@@ -29,4 +29,8 @@
     <string name="ListOfBooksTitleFilterHint">Filter by contains in title field…</string>
     <string name="ListOfBooksAuthorFilterHint">Filter by contains in author field…</string>
     <string name="ListOfBooksYearFilterHint">Filter by contains in year field…</string>
+    <string name="RemoveBookTitleFilterHint">Filter by contains in title field…</string>
+    <string name="RemoveBookAuthorFilterHint">Filter by contains in author field…</string>
+    <string name="RemoveBookYearFilterHint">Filter by contains in year field…</string>
+    <string name="removeBookSubmitText">X</string>
 </resources>
