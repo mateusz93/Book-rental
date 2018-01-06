@@ -64,7 +64,7 @@ public class AddBookActivity extends AppCompatActivity {
         if(author.isEmpty()){
             validationErrors.put("author","Author field cannot be empty!");
         } else if(author.split(" ").length != 2 || author.matches(".*\\d+.*")) {
-            validationErrors.put("author","Invalid format on author field!Expected \"[name] [surname(s)]\"");
+            validationErrors.put("author","Invalid format on author field! Expected \"[name] [surname(s)]\"");
         }
         if(title.isEmpty()) {
             validationErrors.put("title","Title field cannot be empty!");

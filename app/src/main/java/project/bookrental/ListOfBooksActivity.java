@@ -17,9 +17,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import project.bookrental.models.BookModel;
 
@@ -112,14 +116,17 @@ public class ListOfBooksActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<HashMap<String,Object>> list = (List<HashMap<String,Object>>)dataSnapshot.getValue();
+                List<Object> list = Arrays.asList((((HashMap)dataSnapshot.getValue()).values().toArray()));
                 listOfBooks.clear();
-                for(HashMap<String,Object> fields : list){
-                    Long id = (Long) fields.get("id");
-                    String author = (String) fields.get("author");
-                    Integer year = ((Long) fields.get("year")).intValue();
-                    String title = (String) fields.get("title");
-                    listOfBooks.add(new BookModel(id,author,title,year));
+                if (CollectionUtils.isNotEmpty(list)) {
+                    for(Object field : list){
+                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
+                        Long id = (Long) fields.get("id");
+                        String author = (String) fields.get("author");
+                        Integer year = ((Long) fields.get("year")).intValue();
+                        String title = (String) fields.get("title");
+                        listOfBooks.add(new BookModel(id,author,title,year));
+                    }
                 }
                 filteredListOfBooks.addAll(listOfBooks);
                 List<String> listForAdapter = new ArrayList<>();
