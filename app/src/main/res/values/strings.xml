@@ -9,6 +9,7 @@
     <string name="email">Email</string>
     <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
     <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
+    <string name="auth_not_verified">Authentication failed, verify your email!</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="btn_login">LOGIN</string>

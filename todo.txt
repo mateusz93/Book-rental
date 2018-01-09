@@ -1,11 +1,10 @@
 ﻿TODO:
--send verification email functionality (here example: https://firebase.googleblog.com/2017/02/email-verification-in-firebase-auth.html)
 -giving id for every book, every book has own qrcode
 -discuss payments in app
 
 //Student
 -Fetching all testing data from SafariBook API
--Add trigger which fetch book from SarabiBook API every day
+-Add trigger which fetch book from SafariBook API every day
 -access to book library (checking which books are available, which aren't available)
 -unique qr code
 -buy some new books request button
@@ -21,8 +20,8 @@ DONE:
 -Initially project configuration
 -Initial Firebase configuration
 -Login into application functionality
--Register in application functionality (email with suffix p.lodz.pl, confirm by click on link on email box)
-
+-Register in application functionality (
+-send verification email functionality (here example: https://firebase.googleblog.com/2017/02/email-verification-in-firebase-auth.html)
 
 
 

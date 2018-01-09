@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Created by marcin on 16.10.17.
@@ -82,22 +83,40 @@ public class SignupActivity extends AppCompatActivity {
                 //create user
                 auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-                                progressBar.setVisibility(View.GONE);
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
-                                            Toast.LENGTH_SHORT).show();
-                                } else {
-                                    finish();
-                                }
-                            }
-                        });
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                            // If sign in fails, display a message to the user. If sign in succeeds
+                            // the auth state listener will be notified and logic to handle the
+                            // signed in user can be handled in the listener.
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                final FirebaseUser user = auth.getCurrentUser();
+                                user.sendEmailVerification()
+                                        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener() {
+                                            @Override
+                                            public void onComplete(@NonNull Task task) {
+                                                // Re-enable button
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(SignupActivity.this,
+                                                            "Verification email sent to " + user.getEmail(),
+                                                            Toast.LENGTH_SHORT).show();
+                                                    auth.signOut();
+                                                    finish();
+                                                } else {
+                                                    Toast.makeText(SignupActivity.this,
+                                                            "Failed to send verification email.",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
 
+                            }
+                    }
+                });
             }
         });
     }
