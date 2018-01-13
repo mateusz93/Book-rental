@@ -37,4 +37,5 @@
     <string name="BorrowBookTitleFilterHint">Filter by contains in title field…</string>
     <string name="BorrowBookAuthorFilterHint">Filter by contains in author field…</string>
     <string name="BorrowBookYearFilterHint">Filter by contains in year field…</string>
+    <string name="BorrowBookSubmit">Borrow</string>
 </resources>

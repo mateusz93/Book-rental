@@ -1,16 +1,22 @@
 package project.bookrental;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,7 +44,7 @@ public class BorrowBookActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_borrow_boos);
+        setContentView(R.layout.activity_borrow_books);
         authorEditText = (EditText) findViewById(R.id.BorrowBookAuthorEditText);
         setAuthorEditTestListener();
         titleEditText = (EditText) findViewById(R.id.BorrowBookTitleEditText);
@@ -112,12 +118,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                 filteredBorrowBook.add(book);
             }
         }
-        List<String> listForAdapter = new ArrayList<>();
-        for(BookModel book : filteredBorrowBook){
-            listForAdapter.add(book.toString());
-        }
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(BorrowBookActivity.this, R.layout.activity_row_layout, R.id.listText, listForAdapter);
-        listView.setAdapter(arrayAdapter);
+        BorrowBookAdapter borrowBookAdapter = new BorrowBookAdapter(BorrowBookActivity.this, filteredBorrowBook);
+        listView.setAdapter(borrowBookAdapter);
     }
 
     void getAllBooksFromDatabase() {
@@ -138,13 +140,7 @@ public class BorrowBookActivity extends AppCompatActivity {
                         borrowedBooks.add(new BookModel(id, author, title, year));
                     }
                 }
-                filteredBorrowBook.addAll(borrowedBooks);
-                List<String> listForAdapter = new ArrayList<>();
-                for(BookModel book : filteredBorrowBook){
-                    listForAdapter.add(book.toString());
-                }
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(BorrowBookActivity.this, R.layout.activity_row_layout, R.id.listText, listForAdapter);
-                listView.setAdapter(arrayAdapter);
+                filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -154,4 +150,43 @@ public class BorrowBookActivity extends AppCompatActivity {
             }
         });
     }
-};
+
+    private class BorrowBookAdapter extends ArrayAdapter<BookModel> {
+
+        BorrowBookAdapter(Context context, List<BookModel> books) {
+            super(context, 0, books);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            final BookModel book = getItem(position);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_borrow_books_layout, parent, false);
+            }
+            TextView textView = convertView.findViewById(R.id.borrowBookListText);
+            Button button = convertView.findViewById(R.id.borrowBookButton);
+            textView.setText(book != null ? book.toString() : "");
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference myRef = database.getReference("books");
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            myRef.removeEventListener(this);
+                            myRef.child(String.valueOf(book.getId())).setValue(null);
+                            Toast.makeText(getApplicationContext(), "Book borrowed!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d("err:BorrowBook:183", databaseError.getMessage());
+                        }
+                    });
+                }
+            });
+            return convertView;
+        }
+    }
+}
