@@ -8,7 +8,6 @@
 -access to book library (checking which books are available, which aren't available)
 -unique qr code
 -buy some new books request button
--Borrowing and returning books functionality (which student, which book, from, to etc.)
 -reserve book (24h) / cancel reservation
 -check his account (how many books are borrowed already)
 -pay for overdue
@@ -22,6 +21,8 @@ DONE:
 -Login into application functionality
 -Register in application functionality (
 -send verification email functionality (here example: https://firebase.googleblog.com/2017/02/email-verification-in-firebase-auth.html)
+
+-Borrowing and returning books functionality (which student, which book, from, to etc.) - to improve
 
 
 
