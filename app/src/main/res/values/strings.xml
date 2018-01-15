@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Book rental</string>
     <string name="addBook">Add book</string>
+    <string name="requestBook">Request book</string>
+    <string name="checkRequestBook">Check requests</string>
     <string name="removeBook">Remove book</string>
     <string name="borrowBook">Borrow book</string>
     <string name="returnBook">Return book</string>
@@ -23,10 +25,12 @@
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
     <string name="addBookTitle">Add book</string>
+    <string name="requestBookTitle">Request book</string>
     <string name="addBookTitleHint">Enter title…</string>
     <string name="addBookAuthorHint">Enter author…</string>
     <string name="addBookYearHint">Enter year…</string>
     <string name="addBookSubmitText">Submit</string>
+    <string name="requestBookSubmitText">Request</string>
     <string name="listOfBooks">List of books</string>
     <string name="ListOfBooksTitleFilterHint">Filter by contains in title field…</string>
     <string name="ListOfBooksAuthorFilterHint">Filter by contains in author field…</string>

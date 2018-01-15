@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/RequestBookTitleLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/requestBookTitle"
+            android:textSize="10pt">
+        </TextView>
+
+        <EditText
+            android:id="@+id/RequestBookAuthorEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/addBookAuthorHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <EditText
+            android:id="@+id/RequestBookTitleEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/addBookTitleHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <EditText
+            android:id="@+id/RequestBookYearEditText"
+            android:layout_height="wrap_content"
+            android:hint="@string/addBookYearHint"
+            android:layout_width="fill_parent">
+        </EditText>
+
+        <Button
+            android:id="@+id/RequestBookSubmit"
+            android:layout_height="wrap_content"
+            android:text="@string/requestBookSubmitText"
+            android:onClick="requestListener"
+            android:layout_width="fill_parent">
+        </Button>
+
+</LinearLayout>
