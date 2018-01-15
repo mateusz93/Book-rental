@@ -4,6 +4,7 @@
     <string name="removeBook">Remove book</string>
     <string name="borrowBook">Borrow book</string>
     <string name="returnBook">Return book</string>
+    <string name="returnBookShort">Return</string>
     <string name="about">About</string>
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>
