@@ -1,6 +1,6 @@
 package project.bookrental.models;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Created by Mateusz on 05.01.2018.
@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 public class BorrowedBookModel {
 
     private Long bookId;
-    private Long userId;
-    private LocalDateTime borrowDate;
+    private String userId;
+    private Date borrowDate;
 
     public BorrowedBookModel() {
     }
 
-    public BorrowedBookModel(Long bookId, Long userId, LocalDateTime borrowDate) {
+    public BorrowedBookModel(Long bookId, String userId, Date borrowDate) {
         this.bookId = bookId;
         this.userId = userId;
         this.borrowDate = borrowDate;
@@ -29,19 +29,19 @@ public class BorrowedBookModel {
         this.bookId = bookId;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public LocalDateTime getBorrowDate() {
+    public Date getBorrowDate() {
         return borrowDate;
     }
 
-    public void setBorrowDate(LocalDateTime borrowDate) {
+    public void setBorrowDate(Date borrowDate) {
         this.borrowDate = borrowDate;
     }
 }

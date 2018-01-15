@@ -116,6 +116,9 @@ public class ListOfBooksActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    return;
+                }
                 List<Object> list = Arrays.asList((((HashMap)dataSnapshot.getValue()).values().toArray()));
                 listOfBooks.clear();
                 if (CollectionUtils.isNotEmpty(list)) {

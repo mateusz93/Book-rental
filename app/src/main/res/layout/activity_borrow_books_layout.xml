@@ -19,7 +19,6 @@
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.1"
-        android:onClick="submitListener"
         android:text="@string/BorrowBookSubmit">
     </Button>
 
