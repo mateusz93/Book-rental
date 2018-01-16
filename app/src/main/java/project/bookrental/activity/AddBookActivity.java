@@ -1,4 +1,4 @@
-package project.bookrental;
+package project.bookrental.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import project.bookrental.R;
 import project.bookrental.models.BookModel;
 
 

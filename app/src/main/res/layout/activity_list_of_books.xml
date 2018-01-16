@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context=".ListOfBooksActivity">
+    tools:context=".activity.ListOfBooksActivity">
 
         <EditText
             android:id="@+id/ListOfBooksAuthorEditText"

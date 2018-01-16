@@ -9,23 +9,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".LoginActivity" >
+        <activity android:name=".activity.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ListOfBooksActivity" />
-        <activity android:name=".SignupActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".AddBookActivity"/>
-        <activity android:name=".RemoveBookActivity"/>
-        <activity android:name=".BorrowBookActivity"/>
-        <activity android:name=".ReturnBookActivity"/>
-        <activity android:name=".RequestBookActivity"/>
-        <activity android:name=".CheckRequestBookActivity"/>
-        <activity android:name=".AboutActivity"/>
+        <activity android:name=".activity.ListOfBooksActivity" />
+        <activity android:name=".activity.SignupActivity" />
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.ResetPasswordActivity" />
+        <activity android:name=".activity.AddBookActivity"/>
+        <activity android:name=".activity.RemoveBookActivity"/>
+        <activity android:name=".activity.BorrowBookActivity"/>
+        <activity android:name=".activity.ReturnBookActivity"/>
+        <activity android:name=".activity.RequestBookActivity"/>
+        <activity android:name=".activity.CheckRequestBookActivity"/>
+        <activity android:name=".activity.AboutActivity"/>
     </application>
 
 </manifest>

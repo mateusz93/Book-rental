@@ -5,10 +5,9 @@
 //Student
 -Fetching all testing data from SafariBook API
 -Add trigger which fetch book from SafariBook API every day
--access to book library (checking which books are available, which aren't available)
 -unique qr code
 -reserve book (24h) / cancel reservation
--check his account (how many books are borrowed already)
+
 -pay for overdue
 -handling with destroyed books
 
@@ -22,7 +21,9 @@ DONE:
 -send verification email functionality (here example: https://firebase.googleblog.com/2017/02/email-verification-in-firebase-auth.html)
 
 -buy some new books request button
+-check his account (how many books are borrowed already) - po co to?
 -Borrowing and returning books functionality (which student, which book, from, to etc.) - to improve
+-access to book library (checking which books are available, which aren't available)
 
 
 

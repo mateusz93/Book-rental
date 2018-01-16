@@ -1,4 +1,4 @@
-package project.bookrental;
+package project.bookrental.activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import project.bookrental.R;
 import project.bookrental.models.RequestBookModel;
 
 /**

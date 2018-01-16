@@ -1,4 +1,4 @@
-package project.bookrental;
+package project.bookrental.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +6,17 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import project.bookrental.R;
+import project.bookrental.util.AuthenticationUtils;
+
 public class MainActivity extends AppCompatActivity {
 
+    private LinearLayout menu;
     private Button signOut;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -75,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void addOnClickListenersOnButtons() {
         Integer[] buttonNames = new Integer[] {
                 R.id.listOfBooksButton,
@@ -96,28 +100,54 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(new Intent(MainActivity.this, ListOfBooksActivity.class));
                             break;
                         case R.id.addBookButton:
-                            startActivity(new Intent(MainActivity.this, AddBookActivity.class));
+                            if (AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                startActivity(new Intent(MainActivity.this, AddBookActivity.class));
+                            }
                             break;
                         case R.id.removeBookButton:
-                            startActivity(new Intent(MainActivity.this, RemoveBookActivity.class));
+                            if (AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                startActivity(new Intent(MainActivity.this, RemoveBookActivity.class));
+                            }
                             break;
                         case R.id.borrowBookButton:
-                            startActivity(new Intent(MainActivity.this, BorrowBookActivity.class));
+                            if (!AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                startActivity(new Intent(MainActivity.this, BorrowBookActivity.class));
+                            }
                             break;
                         case R.id.returnBookButton:
-                            startActivity(new Intent(MainActivity.this, ReturnBookActivity.class));
+                            if (!AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                startActivity(new Intent(MainActivity.this, ReturnBookActivity.class));
+                            }
                             break;
                         case R.id.requestBookButton:
-                            startActivity(new Intent(MainActivity.this, RequestBookActivity.class));
+                            if (!AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                startActivity(new Intent(MainActivity.this, RequestBookActivity.class));
+                            }
                             break;
                         case R.id.checkRequestBookButton:
-                            startActivity(new Intent(MainActivity.this, CheckRequestBookActivity.class));
+                            if (AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                startActivity(new Intent(MainActivity.this, CheckRequestBookActivity.class));
+                            }
                             break;
                         case R.id.aboutButton:
                             startActivity(new Intent(MainActivity.this, AboutActivity.class));
                     }
                 }
             });
+        }
+        setButtonVisibility();
+    }
+
+    private void setButtonVisibility() {
+        menu = (LinearLayout) findViewById(R.id.menu);
+        if (AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+            menu.removeView(findViewById(R.id.borrowBookButton));
+            menu.removeView(findViewById(R.id.returnBookButton));
+            menu.removeView(findViewById(R.id.requestBookButton));
+        } else {
+            menu.removeView(findViewById(R.id.addBookButton));
+            menu.removeView(findViewById(R.id.removeBookButton));
+            menu.removeView(findViewById(R.id.checkRequestBookButton));
         }
     }
 }
