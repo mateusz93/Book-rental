@@ -2,20 +2,24 @@ package project.bookrental.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
+import android.widget.EditText;
+import com.google.firebase.auth.FirebaseAuth;
 import project.bookrental.R;
 
-
 /**
- * Created by marcin on 14.10.17.
+ * @author Mateusz Wieczorek
  */
-
 public class AboutActivity extends AppCompatActivity {
+
+    private EditText loggedAs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        loggedAs = (EditText) findViewById(R.id.loggedAs);
+        final String name = FirebaseAuth.getInstance().getCurrentUser() != null ? FirebaseAuth.getInstance().getCurrentUser().getEmail() : "";
+        loggedAs.setText("Logged as: " + name);
     }
 
 }
