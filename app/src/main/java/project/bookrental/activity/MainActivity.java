@@ -4,20 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.HashMap;
+import java.util.List;
 
 import project.bookrental.R;
-import project.bookrental.util.AuthenticationUtils;
 
 public class MainActivity extends AppCompatActivity {
 
-    private LinearLayout menu;
-    private Button signOut;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
 
@@ -29,36 +37,18 @@ public class MainActivity extends AppCompatActivity {
         //get firebase auth instance
         auth = FirebaseAuth.getInstance();
 
-        //get current user
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user == null) {
-                    // user auth state is changed - user is null
-                    // launch login activity
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     finish();
                 }
             }
         };
-        signOut = (Button) findViewById(R.id.sign_out);
-
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signOut();
-            }
-        });
-
+        setMenuVisibility();
         addOnClickListenersOnButtons();
-    }
-
-    //sign out method
-    public void signOut() {
-        auth.signOut();
     }
 
     @Override
@@ -89,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 R.id.returnBookButton,
                 R.id.requestBookButton,
                 R.id.checkRequestBookButton,
-                R.id.aboutButton};
+                R.id.aboutButton,
+                R.id.sign_out};
         for (int i = 0; i < buttonNames.length; i++) {
             Button button = (Button)findViewById(buttonNames[i]);
             button.setOnClickListener(new View.OnClickListener() {
@@ -100,54 +91,77 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(new Intent(MainActivity.this, ListOfBooksActivity.class));
                             break;
                         case R.id.addBookButton:
-                            if (AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                                startActivity(new Intent(MainActivity.this, AddBookActivity.class));
-                            }
+                            startActivity(new Intent(MainActivity.this, AddBookActivity.class));
                             break;
                         case R.id.removeBookButton:
-                            if (AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                                startActivity(new Intent(MainActivity.this, RemoveBookActivity.class));
-                            }
+                            startActivity(new Intent(MainActivity.this, RemoveBookActivity.class));
                             break;
                         case R.id.borrowBookButton:
-                            if (!AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                                startActivity(new Intent(MainActivity.this, BorrowBookActivity.class));
-                            }
+                            startActivity(new Intent(MainActivity.this, BorrowBookActivity.class));
                             break;
                         case R.id.returnBookButton:
-                            if (!AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                                startActivity(new Intent(MainActivity.this, ReturnBookActivity.class));
-                            }
+                            startActivity(new Intent(MainActivity.this, ReturnBookActivity.class));
                             break;
                         case R.id.requestBookButton:
-                            if (!AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                                startActivity(new Intent(MainActivity.this, RequestBookActivity.class));
-                            }
+                            startActivity(new Intent(MainActivity.this, RequestBookActivity.class));
                             break;
                         case R.id.checkRequestBookButton:
-                            if (AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                                startActivity(new Intent(MainActivity.this, CheckRequestBookActivity.class));
-                            }
+                            startActivity(new Intent(MainActivity.this, CheckRequestBookActivity.class));
                             break;
                         case R.id.aboutButton:
                             startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                        case R.id.sign_out:
+                            findViewById(R.id.sign_out).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    auth.signOut();
+                                }
+                            });
                     }
                 }
             });
         }
-        setButtonVisibility();
     }
 
-    private void setButtonVisibility() {
-        menu = (LinearLayout) findViewById(R.id.menu);
-        if (AuthenticationUtils.isLoggedAsAdmin(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-            menu.removeView(findViewById(R.id.borrowBookButton));
-            menu.removeView(findViewById(R.id.returnBookButton));
-            menu.removeView(findViewById(R.id.requestBookButton));
-        } else {
-            menu.removeView(findViewById(R.id.addBookButton));
-            menu.removeView(findViewById(R.id.removeBookButton));
-            menu.removeView(findViewById(R.id.checkRequestBookButton));
-        }
+    private void setMenuVisibility() {
+        final DatabaseReference users = FirebaseDatabase.getInstance().getReference("admin_users");
+        users.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    return;
+                }
+                boolean isAdmin = false;
+                if (CollectionUtils.isNotEmpty((List) dataSnapshot.getValue())) {
+                    for(Object field : (List) dataSnapshot.getValue()){
+                        if (field != null) {
+                            final HashMap<String, Object> fields = (HashMap<String, Object>) field;
+                            final String email = (String) fields.get("email");
+                            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equalsIgnoreCase(email)) {
+                                isAdmin = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                LinearLayout menu = (LinearLayout) findViewById(R.id.menu);
+                if (isAdmin) {
+                    menu.removeView(findViewById(R.id.borrowBookButton));
+                    menu.removeView(findViewById(R.id.returnBookButton));
+                    menu.removeView(findViewById(R.id.requestBookButton));
+                } else {
+                    menu.removeView(findViewById(R.id.addBookButton));
+                    menu.removeView(findViewById(R.id.removeBookButton));
+                    menu.removeView(findViewById(R.id.checkRequestBookButton));
+                    //menu.removeView(findViewById(R.id.confirmButton));
+                }
+                menu.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("err:AddBookListene:93", databaseError.getMessage());
+            }
+        });
     }
 }

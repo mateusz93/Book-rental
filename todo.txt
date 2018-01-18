@@ -11,7 +11,7 @@
 -pay for overdue
 -handling with destroyed books
 
-//Admin
+//Admin (book.rental.p.lodz.pl / admin12345678)
 -How many copy of given book is in the library (add,remove)
 DONE:
 -Initially project configuration
