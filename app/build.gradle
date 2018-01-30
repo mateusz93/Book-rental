@@ -33,5 +33,6 @@ dependencies {
     compile "com.google.android.gms:play-services-gcm:11.0.4"
     compile "com.google.firebase:firebase-auth:11.0.4"
     compile 'com.google.firebase:firebase-database:11.0.4'
+    compile 'me.dm7.barcodescanner:zxing:1.9'
     testCompile 'junit:junit:4.12'
 }

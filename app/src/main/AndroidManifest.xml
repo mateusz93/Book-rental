@@ -26,6 +26,7 @@
         <activity android:name=".activity.RequestBookActivity"/>
         <activity android:name=".activity.CheckRequestBookActivity"/>
         <activity android:name=".activity.AboutActivity"/>
+        <activity android:name=".activity.BitMapActivity"/>
     </application>
 
 </manifest>

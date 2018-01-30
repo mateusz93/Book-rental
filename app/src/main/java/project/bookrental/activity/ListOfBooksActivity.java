@@ -1,11 +1,13 @@
 package project.bookrental.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -33,6 +35,8 @@ import project.bookrental.models.BookModel;
  */
 
 public class ListOfBooksActivity extends AppCompatActivity {
+
+    public final static String SOUL = "vMv48nFoBWvfREAFBjKVvQWAZkEIRhLV9TBYKS2A";
 
     EditText authorEditText, titleEditText, yearEditText;
     ListView listView;
@@ -90,6 +94,15 @@ public class ListOfBooksActivity extends AppCompatActivity {
             }
         });
         listView = (ListView) findViewById(R.id.ListOfBooksListView);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                BookModel bookModel = filteredListOfBooks.get(position);
+                Intent intent = new Intent(ListOfBooksActivity.this, BitMapActivity.class);
+                intent.putExtra("key",SOUL + bookModel.getId());
+                startActivity(intent);
+            }
+        });
         progressBar = (ProgressBar) findViewById(R.id.ListOfBooksProgressBar);
         getAllBooksFromDatabase();
 

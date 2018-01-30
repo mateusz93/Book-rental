@@ -1,15 +1,13 @@
 ﻿TODO:
--giving id for every book, every book has own qrcode
--discuss payments in app
-
-//Student
--Fetching all testing data from SafariBook API
--Add trigger which fetch book from SafariBook API every day
--unique qr code
+/* SAFARI BOOKS GIVES US ALL BOOKS WHICH CAN BE AVAILABLE IN LIBRARY. LIBRARY HAVE LIST OF AVAILABLE BOOKS (ONE OF SAFARI BOOK API WITH UNIQUE ID)
+-fetching list all books from SafariBook API
+-add button to fetch list all books from SafariBook API
 -reserve book (24h) / cancel reservation
-
--pay for overdue
 -handling with destroyed books
+-how many copy of given book is in the library (add,remove)
+-unique qr code per student // maybe it would be not necessary
+-to pay for overdue
+-discuss payments in app
 
 //Admin (book.rental.p.lodz.pl / admin12345678)
 -How many copy of given book is in the library (add,remove)
@@ -19,12 +17,11 @@ DONE:
 -Login into application functionality
 -Register in application functionality (
 -send verification email functionality (here example: https://firebase.googleblog.com/2017/02/email-verification-in-firebase-auth.html)
-
 -buy some new books request button
 -check his account (how many books are borrowed already) - po co to?
 -Borrowing and returning books functionality (which student, which book, from, to etc.) - to improve
 -access to book library (checking which books are available, which aren't available)
-
+-giving id for every book, every book has own qrcode
 
 
 /*
