@@ -1,4 +1,4 @@
-package project.bookrental.activity;
+package project.bookrental.activity.admin;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -173,7 +173,7 @@ public class RemoveBookActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             myRef.removeEventListener(this);
-                            myRef.child(String.valueOf(book.getId())).setValue(null);
+                            myRef.child(String.valueOf(book.getId())).removeValue();
                             Toast.makeText(getApplicationContext(), "Book removed from database!", Toast.LENGTH_SHORT).show();
                         }
 

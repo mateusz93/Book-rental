@@ -1,4 +1,4 @@
-package project.bookrental.activity;
+package project.bookrental.activity.common;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

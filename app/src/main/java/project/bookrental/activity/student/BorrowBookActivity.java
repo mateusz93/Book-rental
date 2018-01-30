@@ -1,4 +1,4 @@
-package project.bookrental.activity;
+package project.bookrental.activity.student;
 
 import android.content.Context;
 import android.content.Intent;
@@ -37,13 +37,14 @@ import java.util.List;
 import java.util.Objects;
 
 import project.bookrental.R;
+import project.bookrental.activity.common.LoginActivity;
 import project.bookrental.models.BookModel;
 import project.bookrental.models.BorrowedBookModel;
+import project.bookrental.models.ConfirmationBookModel;
+import project.bookrental.models.ConfirmationType;
 
 /**
- *
  * @author Mateusz Wieczorek
- *
  */
 public class BorrowBookActivity extends AppCompatActivity {
 
@@ -51,8 +52,11 @@ public class BorrowBookActivity extends AppCompatActivity {
     private EditText authorEditText, titleEditText, yearEditText;
     private ListView listView;
     private ProgressBar progressBar;
-    private final List<BookModel> borrowedBooks = new ArrayList<>();
+    private final List<BookModel> books = new ArrayList<>();
     private final List<BookModel> filteredBorrowBook = new ArrayList<>();
+    private final List<ConfirmationBookModel> confirmationBookModels = new ArrayList<>();
+    private final List<BorrowedBookModel> borrowedBooks = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,53 +92,84 @@ public class BorrowBookActivity extends AppCompatActivity {
     private void setYearEditTextListener() {
         yearEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterList(authorEditText.getText().toString(),titleEditText.getText().toString(),s.toString());
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
     private void setTitleEditTextListener() {
         titleEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterList(authorEditText.getText().toString(),s.toString(),yearEditText.getText().toString());
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterList(authorEditText.getText().toString(), s.toString(), yearEditText.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
     private void setAuthorEditTestListener() {
         authorEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterList(s.toString(),titleEditText.getText().toString(),yearEditText.getText().toString());
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterList(s.toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
     private void filterList(String author, String title, String year) {
         filteredBorrowBook.clear();
-        for(BookModel book : borrowedBooks){
-            if(book.getAuthor().contains(author) && book.getTitle().contains(title) && book.getYear().toString().contains(year)){
-                filteredBorrowBook.add(book);
+        filteredBorrowBook.addAll(books);
+        Iterator<BookModel> it = filteredBorrowBook.iterator();
+        while (it.hasNext()) {
+            final BookModel model = it.next();
+            if (!model.getAuthor().contains(author) || !model.getTitle().contains(title) && !model.getYear().toString().contains(year)) {
+                it.remove();
+                continue;
+            }
+            boolean isConfirm = false;
+            for (ConfirmationBookModel confirmationBookModel : confirmationBookModels) {
+                if (confirmationBookModel.getBookId().equals(model.getId())) {
+                    isConfirm = true;
+                    break;
+                }
+            }
+            if (isConfirm) {
+                it.remove();
+                continue;
+            }
+            boolean isBorrowed = false;
+            for (BorrowedBookModel borrowedBookModel : borrowedBooks) {
+                if (borrowedBookModel.getBookId().equals(model.getId())) {
+                    isBorrowed = true;
+                    break;
+                }
+            }
+            if (isBorrowed) {
+                it.remove();
             }
         }
         BorrowBookAdapter borrowBookAdapter = new BorrowBookAdapter(BorrowBookActivity.this, filteredBorrowBook);
@@ -142,25 +177,23 @@ public class BorrowBookActivity extends AppCompatActivity {
     }
 
     void getAllBooksFromDatabase() {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference booksRepository = database.getReference("books");
-        final DatabaseReference borrowedBooksRepository = database.getReference("borrowed_books");
+        final DatabaseReference booksRepository = FirebaseDatabase.getInstance().getReference("books");
         booksRepository.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap)dataSnapshot.getValue()).values().toArray()));
-                borrowedBooks.clear();
+                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
+                books.clear();
                 if (CollectionUtils.isNotEmpty(list)) {
-                    for(Object field : list){
+                    for (Object field : list) {
                         HashMap<String, Object> fields = (HashMap<String, Object>) field;
                         Long id = (Long) fields.get("id");
                         String author = (String) fields.get("author");
                         Integer year = ((Long) fields.get("year")).intValue();
                         String title = (String) fields.get("title");
-                        borrowedBooks.add(new BookModel(id, author, title, year));
+                        books.add(new BookModel(id, author, title, year));
                     }
                 }
                 filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
@@ -173,30 +206,55 @@ public class BorrowBookActivity extends AppCompatActivity {
             }
         });
 
+        final DatabaseReference confirmations = FirebaseDatabase.getInstance().getReference("confirmations");
+        confirmations.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    return;
+                }
+                confirmationBookModels.clear();
+                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
+                if (CollectionUtils.isNotEmpty(list)) {
+                    for (Object field : list) {
+                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
+                        Long bookId = (Long) fields.get("bookId");
+                        String userId = (String) fields.get("userId");
+                        ConfirmationType type = ConfirmationType.valueOf((String) fields.get("type"));
+                        Date datetime = new Date((Long)((HashMap) fields.get("datetime")).get("time"));
+                        confirmationBookModels.add(new ConfirmationBookModel(bookId, userId, type, datetime));
+                    }
+                }
+                filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Err:listofbooks:", databaseError.toException());
+            }
+        });
+
+        final DatabaseReference borrowedBooksRepository = FirebaseDatabase.getInstance().getReference("borrowed_books");
         borrowedBooksRepository.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap)dataSnapshot.getValue()).values().toArray()));
+                borrowedBooks.clear();
+                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 if (CollectionUtils.isNotEmpty(list)) {
-                    final List<Long> toRemove = new ArrayList<>();
-                    for(Object field : list) {
+                    for (Object field : list) {
                         HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        toRemove.add((Long) fields.get("bookId"));
-                    }
-                    for (Long bookId : toRemove) {
-                        Iterator<BookModel> it = filteredBorrowBook.iterator();
-                        while(it.hasNext()) {
-                            final BookModel model = it.next();
-                            if (Objects.equals(model.getId(), bookId)) {
-                                it.remove();
-                                break;
-                            }
-                        }
+                        Long bookId = (Long) fields.get("bookId");
+                        String userId = (String) fields.get("userId");
+                        Date datetime = new Date((Long) ((HashMap) fields.get("borrowDate")).get("time"));
+                        borrowedBooks.add(new BorrowedBookModel(bookId, userId, datetime));
                     }
                 }
+                filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -204,6 +262,7 @@ public class BorrowBookActivity extends AppCompatActivity {
                 Log.w("Err:borrowedBooks:", databaseError.toException());
             }
         });
+
     }
 
     private class BorrowBookAdapter extends ArrayAdapter<BookModel> {
@@ -225,18 +284,18 @@ public class BorrowBookActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    final BorrowedBookModel model = new BorrowedBookModel();
+                    final ConfirmationBookModel model = new ConfirmationBookModel();
                     model.setUserId(userId);
                     model.setBookId(book.getId());
-                    model.setBorrowDate(new Date());
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference myRef = database.getReference("borrowed_books");
+                    model.setType(ConfirmationType.BORROW);
+                    model.setDatetime(new Date());
+                    final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("confirmations");
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             myRef.removeEventListener(this);
                             myRef.child(String.valueOf(model.getBookId())).setValue(model);
-                            Toast.makeText(getApplicationContext(), "Book borrowed!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Get book from library", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
@@ -249,4 +308,5 @@ public class BorrowBookActivity extends AppCompatActivity {
             return convertView;
         }
     }
+
 }

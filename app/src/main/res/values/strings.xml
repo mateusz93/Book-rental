@@ -6,6 +6,7 @@
     <string name="removeBook">Remove book</string>
     <string name="borrowBook">Borrow book</string>
     <string name="returnBook">Return book</string>
+    <string name="confirmBorrowing">Confirm book borrowing</string>
     <string name="returnBookShort">Return</string>
     <string name="about">About</string>
     <string name="action_sign_in_short">Register</string>
@@ -42,5 +43,7 @@
     <string name="BorrowBookTitleFilterHint">Filter by contains in title field…</string>
     <string name="BorrowBookAuthorFilterHint">Filter by contains in author field…</string>
     <string name="BorrowBookYearFilterHint">Filter by contains in year field…</string>
+    <string name="AdminReturnBookFilterHint">Filter by email</string>
     <string name="BorrowBookSubmit">Borrow</string>
+    <string name="ConfirmBorrowBookSubmit">Confirm</string>
 </resources>

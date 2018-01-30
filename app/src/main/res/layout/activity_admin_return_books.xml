@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".activity.student.BorrowBookActivity">
+
+        <EditText
+            android:id="@+id/AdminReturnBookFilter"
+            android:layout_height="wrap_content"
+            android:hint="@string/AdminReturnBookFilterHint"
+            android:layout_width="fill_parent"
+            android:singleLine="false">
+        </EditText>
+
+        <ListView
+            android:id="@+id/AdminReturnBookListView"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent">
+        </ListView>
+
+    </LinearLayout>

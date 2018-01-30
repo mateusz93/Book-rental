@@ -9,24 +9,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".activity.LoginActivity" >
+        <activity android:name=".activity.common.LoginActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ListOfBooksActivity" />
-        <activity android:name=".activity.SignupActivity" />
-        <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.ResetPasswordActivity" />
-        <activity android:name=".activity.AddBookActivity"/>
-        <activity android:name=".activity.RemoveBookActivity"/>
-        <activity android:name=".activity.BorrowBookActivity"/>
-        <activity android:name=".activity.ReturnBookActivity"/>
-        <activity android:name=".activity.RequestBookActivity"/>
-        <activity android:name=".activity.CheckRequestBookActivity"/>
-        <activity android:name=".activity.AboutActivity"/>
-        <activity android:name=".activity.BitMapActivity"/>
+        <activity android:name=".activity.common.AboutActivity"/>
+        <activity android:name=".activity.common.ListOfBooksActivity" />
+        <activity android:name=".activity.common.MainActivity" />
+        <activity android:name=".activity.common.ResetPasswordActivity" />
+        <activity android:name=".activity.common.SignupActivity" />
+        <activity android:name=".activity.student.BorrowBookActivity"/>
+        <activity android:name=".activity.student.RequestBookActivity"/>
+        <activity android:name=".activity.student.ReturnBookActivity"/>
+        <activity android:name=".activity.admin.AddBookActivity"/>
+        <activity android:name=".activity.admin.BorrowBookActivity"/>
+        <activity android:name=".activity.admin.CheckRequestBookActivity"/>
+        <activity android:name=".activity.admin.ConfirmActivity"/>
+        <activity android:name=".activity.admin.RemoveBookActivity"/>
+        <activity android:name=".activity.admin.ReturnBookActivity"/>
+        <activity android:name=".activity.admin.BitMapActivity"/>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package project.bookrental.activity;
+package project.bookrental.activity.common;
 
 import android.content.Intent;
 import android.os.Bundle;

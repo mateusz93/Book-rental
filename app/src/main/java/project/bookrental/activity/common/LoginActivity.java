@@ -1,10 +1,11 @@
-package project.bookrental.activity;
+package project.bookrental.activity.common;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,8 +16,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import project.bookrental.R;
+import project.bookrental.models.UserModel;
 
 /**
  * Created by marcin on 16.10.17.
@@ -104,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                 } else {
                                     if(auth.getCurrentUser().isEmailVerified()) {
+                                        addToDbIfNotExist(auth.getCurrentUser());
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(intent);
                                         finish();
@@ -114,6 +123,21 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
             }
+        });
+    }
+
+    private void addToDbIfNotExist(final FirebaseUser currentUser) {
+        final DatabaseReference usersdRef = FirebaseDatabase.getInstance().getReference().child("users");
+        usersdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                usersdRef.removeEventListener(this);
+                UserModel user = new UserModel(currentUser.getUid(), currentUser.getEmail(), currentUser.getDisplayName(), currentUser.getPhoneNumber());
+                usersdRef.child(user.getUId()).setValue(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 }
