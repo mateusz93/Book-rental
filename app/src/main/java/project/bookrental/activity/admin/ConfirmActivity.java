@@ -3,17 +3,13 @@ package project.bookrental.activity.admin;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,9 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import project.bookrental.R;
 import project.bookrental.models.BookModel;
@@ -51,6 +45,10 @@ public class ConfirmActivity extends AppCompatActivity {
     private final List<ConfirmationBookModel> confirmations = new ArrayList<>();
     private final List<BookView> confirmationsBooks = new ArrayList<>();
 
+    private boolean isConfirmationStored = false;
+    private boolean isBooksStored = false;
+    private boolean isUsersStored = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +58,9 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     private void filterList() {
+        if (!isBooksStored || !isConfirmationStored || !isUsersStored) {
+            return;
+        }
         confirmationsBooks.clear();
         for (ConfirmationBookModel confirmationBook : confirmations) {
             BookView bookView = new BookView();
@@ -101,6 +102,7 @@ public class ConfirmActivity extends AppCompatActivity {
                         books.add(new BookModel(id, author, title, year));
                     }
                 }
+                isBooksStored = true;
                 filterList();
             }
 
@@ -125,10 +127,11 @@ public class ConfirmActivity extends AppCompatActivity {
                         Long bookId = (Long) fields.get("bookId");
                         String userId = (String) fields.get("userId");
                         ConfirmationType type = ConfirmationType.valueOf((String) fields.get("type"));
-                        Date datetime = new Date((Long)((HashMap) fields.get("datetime")).get("time"));
+                        Date datetime = new Date((Long) ((HashMap) fields.get("datetime")).get("time"));
                         confirmations.add(new ConfirmationBookModel(bookId, userId, type, datetime));
                     }
                 }
+                isConfirmationStored = true;
                 filterList();
             }
 
@@ -157,6 +160,7 @@ public class ConfirmActivity extends AppCompatActivity {
                         users.add(new UserModel(uId, email, displayName, phoneNumber));
                     }
                 }
+                isUsersStored = true;
                 filterList();
             }
 
@@ -179,6 +183,9 @@ public class ConfirmActivity extends AppCompatActivity {
             final BookView book = getItem(position);
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_confirmations_layout, parent, false);
+            }
+            if (!isBooksStored || !isConfirmationStored || !isUsersStored) {
+                return convertView;
             }
             TextView textView = convertView.findViewById(R.id.confirmBorrowBookListText);
             Button button = convertView.findViewById(R.id.confirmBorrowBookButton);
