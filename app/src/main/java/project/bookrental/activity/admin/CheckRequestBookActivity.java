@@ -97,14 +97,12 @@ public class CheckRequestBookActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference myRef = database.getReference("request_books");
+                    final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("request_books");
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             myRef.removeEventListener(this);
-                            myRef.child(String.valueOf(book.getId())).setValue(null);
+                            myRef.child(String.valueOf(book.getId())).removeValue();
                             Toast.makeText(getApplicationContext(), "Request removed!", Toast.LENGTH_SHORT).show();
                         }
 

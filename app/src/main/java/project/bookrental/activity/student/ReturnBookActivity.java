@@ -50,6 +50,11 @@ public class ReturnBookActivity extends AppCompatActivity {
     private final List<ConfirmationBookModel> confirmations = new ArrayList<>();
     private final List<BorrowedBookModel> borrowedBooks = new ArrayList<>();
 
+    private boolean isConfirmationStored = false;
+    private boolean isBooksStored = false;
+    private boolean isBorrowedBooksStored = false;
+    private boolean isUsersStored = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +74,9 @@ public class ReturnBookActivity extends AppCompatActivity {
     }
 
     private void filterList() {
+        if (!isBorrowedBooksStored || !isBooksStored || !isConfirmationStored || !isUsersStored) {
+            return;
+        }
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         filteredBooks.clear();
         filteredBooks.addAll(books);
@@ -120,6 +128,7 @@ public class ReturnBookActivity extends AppCompatActivity {
                         books.add(new BookModel(id, author, title, year));
                     }
                 }
+                isBooksStored = true;
                 filterList();
             }
 
@@ -148,6 +157,7 @@ public class ReturnBookActivity extends AppCompatActivity {
                         confirmations.add(new ConfirmationBookModel(bookId, userId, type, datetime));
                     }
                 }
+                isConfirmationStored = true;
                 filterList();
             }
 
@@ -175,6 +185,7 @@ public class ReturnBookActivity extends AppCompatActivity {
                         borrowedBooks.add(new BorrowedBookModel(bookId, userId, datetime));
                     }
                 }
+                isBorrowedBooksStored = true;
                 filterList();
             }
 
@@ -203,6 +214,7 @@ public class ReturnBookActivity extends AppCompatActivity {
                         users.add(new UserModel(uId, email, displayName, phoneNumber));
                     }
                 }
+                isUsersStored = true;
                 filterList();
             }
 
@@ -229,18 +241,14 @@ public class ReturnBookActivity extends AppCompatActivity {
             TextView textView = view.findViewById(R.id.returnBookListText);
             textView.setText(book != null ? book.toString() : "");
 
-            boolean notReceived = false;
+            if (!isBorrowedBooksStored || !isBooksStored || !isConfirmationStored || !isUsersStored) {
+                return view;
+            }
             for (ConfirmationBookModel confirmationBookModel : confirmations) {
                 if (book.getId().equals(confirmationBookModel.getBookId())) {
-                    notReceived = true;
+                    view.findViewById(R.id.studentReceivedBookCheckbox).setVisibility(View.GONE);
+                    break;
                 }
-            }
-            if (notReceived) {
-                view.findViewById(R.id.studentReceivedBookCheckbox).setVisibility(View.GONE);
-                view.findViewById(R.id.notReceivedBookCheckbox);
-            } else {
-                view.findViewById(R.id.studentReceivedBookCheckbox);
-                view.findViewById(R.id.notReceivedBookCheckbox).setVisibility(View.GONE);
             }
 
             return view;

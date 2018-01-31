@@ -110,8 +110,8 @@ public class BorrowBookActivity extends AppCompatActivity {
     }
 
     void getAllBooksFromDatabase() {
-        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("books");
-        myRef.addValueEventListener(new ValueEventListener() {
+        final DatabaseReference booksRef = FirebaseDatabase.getInstance().getReference("books");
+        booksRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
@@ -138,8 +138,8 @@ public class BorrowBookActivity extends AppCompatActivity {
             }
         });
 
-        final DatabaseReference confirmations = FirebaseDatabase.getInstance().getReference("borrowed_books");
-        confirmations.addValueEventListener(new ValueEventListener() {
+        final DatabaseReference borrowedBooksRef = FirebaseDatabase.getInstance().getReference("borrowed_books");
+        borrowedBooksRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
