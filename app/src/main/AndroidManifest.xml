@@ -20,6 +20,7 @@
         <activity android:name=".activity.common.MainActivity" />
         <activity android:name=".activity.common.ResetPasswordActivity" />
         <activity android:name=".activity.common.SignupActivity" />
+        <activity android:name=".activity.common.BitMapActivity"/>
         <activity android:name=".activity.student.BorrowBookActivity"/>
         <activity android:name=".activity.student.RequestBookActivity"/>
         <activity android:name=".activity.student.ReturnBookActivity"/>
@@ -29,7 +30,6 @@
         <activity android:name=".activity.admin.ConfirmActivity"/>
         <activity android:name=".activity.admin.RemoveBookActivity"/>
         <activity android:name=".activity.admin.ReturnBookActivity"/>
-        <activity android:name=".activity.admin.BitMapActivity"/>
     </application>
 
 </manifest>

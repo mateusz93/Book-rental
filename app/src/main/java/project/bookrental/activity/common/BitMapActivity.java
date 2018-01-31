@@ -1,4 +1,4 @@
-package project.bookrental.activity.admin;
+package project.bookrental.activity.common;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
