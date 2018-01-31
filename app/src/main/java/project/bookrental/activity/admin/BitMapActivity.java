@@ -1,4 +1,4 @@
-package project.bookrental.activity;
+package project.bookrental.activity.admin;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,9 +13,8 @@ import com.google.zxing.common.BitMatrix;
 import project.bookrental.R;
 
 /**
- * Created by marcin on 30.01.18.
+ * @author Marcin Korycki
  */
-
 public class BitMapActivity extends AppCompatActivity {
 
     public final static int WHITE = 0xFFFFFFFF;
