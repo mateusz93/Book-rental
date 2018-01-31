@@ -23,14 +23,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import project.bookrental.R;
 import project.bookrental.models.BookModel;
+import project.bookrental.models.BorrowedBookModel;
 
 
 /**
@@ -153,33 +158,58 @@ public class RemoveBookActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            // Get the data item for this position
             final BookModel book = getItem(position);
-            // Check if an existing view is being reused, otherwise inflate the view
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_remove_row_layout, parent, false);
             }
-            // Lookup view for data population
-            TextView textView = (TextView) convertView.findViewById(R.id.listText);
-            Button button = (Button) convertView.findViewById(R.id.removeBookButton);
-            // Populate the data into the template view using the data object
-            textView.setText(book.toString());
+            TextView textView = convertView.findViewById(R.id.listText);
+            Button button = convertView.findViewById(R.id.removeBookButton);
+            textView.setText(book != null ? book.toString() : "");
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    final DatabaseReference myRef = database.getReference("books");
-                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    final DatabaseReference booksRef = FirebaseDatabase.getInstance().getReference("books");
+                    booksRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            myRef.removeEventListener(this);
-                            myRef.child(String.valueOf(book.getId())).removeValue();
+                            booksRef.removeEventListener(this);
+                            booksRef.child(String.valueOf(book.getId())).removeValue();
                             Toast.makeText(getApplicationContext(), "Book removed from database!", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Log.d("err:RemBookListene:183", databaseError.getMessage());
+                        }
+                    });
+
+                    final DatabaseReference confirmationsRef = FirebaseDatabase.getInstance().getReference("confirmations");
+                    confirmationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            confirmationsRef.removeEventListener(this);
+                            confirmationsRef.child(String.valueOf(book.getId())).removeValue();
+                            Toast.makeText(getApplicationContext(), "Book removed from database!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d("err:RemBookListene:183", databaseError.getMessage());
+                        }
+                    });
+
+                    final DatabaseReference borrowedBooksRef = FirebaseDatabase.getInstance().getReference("borrowed_books");
+                    borrowedBooksRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            borrowedBooksRef.removeEventListener(this);
+                            borrowedBooksRef.child(String.valueOf(book.getId())).removeValue();
+                            Toast.makeText(getApplicationContext(), "Book removed from database!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w("Err:listofbooks:", databaseError.toException());
                         }
                     });
                 }
