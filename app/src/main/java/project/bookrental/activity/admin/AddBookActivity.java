@@ -22,39 +22,19 @@ import project.bookrental.models.BookModel;
 
 
 /**
- * Created by marcin on 14.10.17.
+ * @author Marcin Korycki
  */
-
 public class AddBookActivity extends AppCompatActivity {
 
-    EditText authorEditText, titleEditText, yearEditText;
+    private EditText authorEditText, titleEditText, yearEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_book); // TODO: add separate views for every Activity        inputEmail = (EditText) findViewById(R.id.email);
+        setContentView(R.layout.activity_admin_add_book);
         authorEditText = (EditText) findViewById(R.id.AddBookAuthorEditText);
         titleEditText = (EditText) findViewById(R.id.AddBookTitleEditText);
         yearEditText = (EditText) findViewById(R.id.AddBookYearEditText);
-    }
-
-    void workOnDatabase() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String value = dataSnapshot.getValue(String.class);
-                Log.d("MESSAGE:", value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w("MESSAGE:", databaseError.toException());
-            }
-        });
-        Log.d("BEFORE MESSAGE","zapisujemy!");
-        myRef.setValue("Hello, World!");
     }
 
     public void submitListener(View view) {

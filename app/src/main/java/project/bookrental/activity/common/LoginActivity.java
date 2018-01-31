@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,9 +26,8 @@ import project.bookrental.R;
 import project.bookrental.models.UserModel;
 
 /**
- * Created by marcin on 16.10.17.
+ * @author Marcin Korycki
  */
-
 public class LoginActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword;
@@ -50,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // set the view now
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_common_login);
 
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);

@@ -43,6 +43,7 @@ import project.bookrental.models.BorrowedBookModel;
 import project.bookrental.models.ConfirmationBookModel;
 import project.bookrental.models.ConfirmationType;
 import project.bookrental.models.ReserveBookModel;
+import project.bookrental.utils.DataStoreUtils;
 
 /**
  * @author Mateusz Wieczorek
@@ -59,6 +60,10 @@ public class BorrowBookActivity extends AppCompatActivity {
     private final List<BorrowedBookModel> borrowedBooks = new ArrayList<>();
     private final List<Long> reservedBooksIds = new ArrayList<>();
 
+    private boolean isConfirmationStored = false;
+    private boolean isBooksStored = false;
+    private boolean isBorrowedBooksStored = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +73,7 @@ public class BorrowBookActivity extends AppCompatActivity {
             finish();
         }
 
-        setContentView(R.layout.activity_borrow_books);
+        setContentView(R.layout.activity_student_borrow_books);
         authorEditText = (EditText) findViewById(R.id.BorrowBookAuthorEditText);
         setAuthorEditTestListener();
         titleEditText = (EditText) findViewById(R.id.BorrowBookTitleEditText);
@@ -142,6 +147,9 @@ public class BorrowBookActivity extends AppCompatActivity {
     }
 
     private void filterList(String author, String title, String year) {
+        if (!isBooksStored || !isConfirmationStored || !isBorrowedBooksStored) {
+            return;
+        }
         filteredBorrowBook.clear();
         filteredBorrowBook.addAll(books);
         Iterator<BookModel> it = filteredBorrowBook.iterator();
@@ -187,16 +195,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long id = (Long) fields.get("id");
-                        String author = (String) fields.get("author");
-                        Integer year = ((Long) fields.get("year")).intValue();
-                        String title = (String) fields.get("title");
-                        books.add(new BookModel(id, author, title, year));
-                    }
-                }
+                books.addAll(DataStoreUtils.readBooks(list));
+                isBooksStored = true;
                 filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
                 progressBar.setVisibility(View.GONE);
             }
@@ -214,18 +214,10 @@ public class BorrowBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                confirmationBookModels.clear();
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long bookId = (Long) fields.get("bookId");
-                        String userId = (String) fields.get("userId");
-                        ConfirmationType type = ConfirmationType.valueOf((String) fields.get("type"));
-                        Date datetime = new Date((Long)((HashMap) fields.get("datetime")).get("time"));
-                        confirmationBookModels.add(new ConfirmationBookModel(bookId, userId, type, datetime));
-                    }
-                }
+                confirmationBookModels.clear();
+                confirmationBookModels.addAll(DataStoreUtils.readConfirmations(list));
+                isConfirmationStored = true;
                 filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
                 progressBar.setVisibility(View.GONE);
             }
@@ -243,17 +235,10 @@ public class BorrowBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                borrowedBooks.clear();
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long bookId = (Long) fields.get("bookId");
-                        String userId = (String) fields.get("userId");
-                        Date datetime = new Date((Long) ((HashMap) fields.get("borrowDate")).get("time"));
-                        borrowedBooks.add(new BorrowedBookModel(bookId, userId, datetime));
-                    }
-                }
+                borrowedBooks.clear();
+                borrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(list));
+                isBorrowedBooksStored = true;
                 filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
                 progressBar.setVisibility(View.GONE);
             }
@@ -272,15 +257,15 @@ public class BorrowBookActivity extends AppCompatActivity {
                     return;
                 }
                 final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                List<Object> list = Arrays.asList((((HashMap)dataSnapshot.getValue()).values().toArray()));
+                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 if (CollectionUtils.isNotEmpty(list)) {
                     final List<Long> toRemove = new ArrayList<>();
                     reservedBooksIds.clear();
-                    for(Object field : list) {
+                    for (Object field : list) {
                         HashMap<String, Object> fields = (HashMap<String, Object>) field;
                         String uid = (String) fields.get("userId");
                         Date expireTime = new Date();
-                        expireTime.setTime((Long)((HashMap<String,Object>)fields.get("borrowDate")).get("time"));
+                        expireTime.setTime((Long) ((HashMap<String, Object>) fields.get("borrowDate")).get("time"));
                         if (expireTime.after(new Date())) {
                             if (!uid.equals(userId)) toRemove.add((Long) fields.get("bookId"));
                             else reservedBooksIds.add((Long) fields.get("bookId"));
@@ -288,7 +273,7 @@ public class BorrowBookActivity extends AppCompatActivity {
                     }
                     for (Long bookId : toRemove) {
                         Iterator<BookModel> it = filteredBorrowBook.iterator();
-                        while(it.hasNext()) {
+                        while (it.hasNext()) {
                             final BookModel model = it.next();
                             if (Objects.equals(model.getId(), bookId)) {
                                 it.remove();
@@ -297,6 +282,7 @@ public class BorrowBookActivity extends AppCompatActivity {
                         }
                     }
                 }
+                filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
             }
 
             @Override
@@ -316,12 +302,15 @@ public class BorrowBookActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             final BookModel book = getItem(position);
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_borrow_books_layout, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_student_borrow_books_layout, parent, false);
             }
             TextView textView = convertView.findViewById(R.id.borrowBookListText);
             Button button = convertView.findViewById(R.id.borrowBookButton);
             final Button reserveButton = convertView.findViewById(R.id.reserveBookButton);
             textView.setText(book != null ? book.toString() : "");
+            if (!isBooksStored || !isConfirmationStored || !isBorrowedBooksStored) {
+                return convertView;
+            }
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -347,7 +336,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                     });
                 }
             });
-            if (reservedBooksIds.contains(book.getId())) reserveButton.setText(R.string.ReserveBookCancel);
+            if (reservedBooksIds.contains(book.getId()))
+                reserveButton.setText(R.string.ReserveBookCancel);
             else reserveButton.setText(R.string.ReserveBookSubmit);
             reserveButton.setOnClickListener(new View.OnClickListener() {
 
@@ -358,7 +348,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                     model.setUserId(userId);
                     model.setBookId(book.getId());
                     Date now = new Date();
-                    if (!reservedBooksIds.contains(book.getId())) now.setTime(now.getTime() + 24 * 60 * 60 * 1000);
+                    if (!reservedBooksIds.contains(book.getId()))
+                        now.setTime(now.getTime() + 24 * 60 * 60 * 1000);
                     model.setBorrowDate(now);
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     final DatabaseReference myRef = database.getReference("reserved_books");
@@ -368,14 +359,11 @@ public class BorrowBookActivity extends AppCompatActivity {
                             myRef.removeEventListener(this);
                             myRef.child(String.valueOf(model.getBookId())).setValue(model);
 
-                            if (!reservedBooksIds.contains(book.getId()))
-                            {
+                            if (!reservedBooksIds.contains(book.getId())) {
                                 reservedBooksIds.add(book.getId());
                                 reserveButton.setText(R.string.ReserveBookCancel);
                                 Toast.makeText(getApplicationContext(), "Book reserved! It will expire after 24 hours!", Toast.LENGTH_SHORT).show();
-                            }
-                            else
-                            {
+                            } else {
                                 reservedBooksIds.remove(book.getId());
                                 reserveButton.setText(R.string.ReserveBookSubmit);
                                 Toast.makeText(getApplicationContext(), "Book reservation cancelled!", Toast.LENGTH_SHORT).show();

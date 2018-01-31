@@ -19,8 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -31,8 +29,8 @@ import project.bookrental.R;
 import project.bookrental.models.BookModel;
 import project.bookrental.models.BorrowedBookModel;
 import project.bookrental.models.ConfirmationBookModel;
-import project.bookrental.models.ConfirmationType;
 import project.bookrental.models.UserModel;
+import project.bookrental.utils.DataStoreUtils;
 
 /**
  * @author Mateusz Wieczorek
@@ -52,7 +50,7 @@ public class ConfirmActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_confirmations);
+        setContentView(R.layout.activity_admin_confirmations);
         listView = (ListView) findViewById(R.id.ConfirmationBorrowBookListView);
         getAllBooksFromDatabase();
     }
@@ -92,16 +90,7 @@ public class ConfirmActivity extends AppCompatActivity {
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long id = (Long) fields.get("id");
-                        String author = (String) fields.get("author");
-                        Integer year = ((Long) fields.get("year")).intValue();
-                        String title = (String) fields.get("title");
-                        books.add(new BookModel(id, author, title, year));
-                    }
-                }
+                books.addAll(DataStoreUtils.readBooks(list));
                 isBooksStored = true;
                 filterList();
             }
@@ -119,18 +108,9 @@ public class ConfirmActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                confirmations.clear();
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long bookId = (Long) fields.get("bookId");
-                        String userId = (String) fields.get("userId");
-                        ConfirmationType type = ConfirmationType.valueOf((String) fields.get("type"));
-                        Date datetime = new Date((Long) ((HashMap) fields.get("datetime")).get("time"));
-                        confirmations.add(new ConfirmationBookModel(bookId, userId, type, datetime));
-                    }
-                }
+                confirmations.clear();
+                confirmations.addAll(DataStoreUtils.readConfirmations(list));
                 isConfirmationStored = true;
                 filterList();
             }
@@ -150,16 +130,7 @@ public class ConfirmActivity extends AppCompatActivity {
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 users.clear();
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        String uId = (String) fields.get("uid");
-                        String email = (String) fields.get("email");
-                        String displayName = (String) fields.get("displayName");
-                        String phoneNumber = (String) fields.get("phoneNumber");
-                        users.add(new UserModel(uId, email, displayName, phoneNumber));
-                    }
-                }
+                users.addAll(DataStoreUtils.readUsers(list));
                 isUsersStored = true;
                 filterList();
             }
@@ -182,15 +153,15 @@ public class ConfirmActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             final BookView book = getItem(position);
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_confirmations_layout, parent, false);
-            }
-            if (!isBooksStored || !isConfirmationStored || !isUsersStored) {
-                return convertView;
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_admin_confirmations_layout, parent, false);
             }
             TextView textView = convertView.findViewById(R.id.confirmBorrowBookListText);
             Button button = convertView.findViewById(R.id.confirmBorrowBookButton);
             textView.setText("Book: " + (book.getBookModel() != null ? book.getBookModel().toString() : ""));
             textView.setText(textView.getText() + "\n" + "User: " + book.getUser().getEmail());
+            if (!isBooksStored || !isConfirmationStored || !isUsersStored) {
+                return convertView;
+            }
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

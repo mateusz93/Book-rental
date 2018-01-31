@@ -20,26 +20,26 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import project.bookrental.R;
 import project.bookrental.models.RequestBookModel;
+import project.bookrental.utils.DataStoreUtils;
 
 /**
  * @author Mateusz Wieczorek
  */
 public class CheckRequestBookActivity extends AppCompatActivity {
 
-    ListView listView;
-    List<RequestBookModel> listOfRequests = new ArrayList<>();
+    private ListView listView;
+    private final List<RequestBookModel> listOfRequests = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_check_request_book);
+        setContentView(R.layout.activity_admin_check_request_book);
         listView = (ListView) findViewById(R.id.CheckRequestBookListView);
         getAllBooksFromDatabase();
     }
@@ -50,24 +50,12 @@ public class CheckRequestBookActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Object value = dataSnapshot.getValue();
-                Collection<Map<String,Object>> books = new ArrayList<>();
-                if(value instanceof HashMap) {
-                    books = ((HashMap<String,Map<String,Object>>) value).values();
-                } else if(value instanceof List){
-                    books = (List<Map<String,Object>>)value;
-                } else {
-                    System.out.println("Error! RemoveBookActivity -> getAllBooksFromDatabase -> onDataChangeValue -> value = " + value);
+                if (dataSnapshot.getValue() == null) {
+                    return;
                 }
+                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 listOfRequests.clear();
-                for (Map<String, Object> fields : books) {
-                    if (fields == null) continue;
-                    Long id = (Long) fields.get("id");
-                    String author = (String) fields.get("author");
-                    Integer year = ((Long) fields.get("year")).intValue();
-                    String title = (String) fields.get("title");
-                    listOfRequests.add(new RequestBookModel(id, author, title, year));
-                }
+                listOfRequests.addAll(DataStoreUtils.readRequest(list));
                 RequestBookAdapter requestBookAdapter = new RequestBookAdapter(CheckRequestBookActivity.this, listOfRequests);
                 listView.setAdapter(requestBookAdapter);
             }
@@ -89,7 +77,7 @@ public class CheckRequestBookActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             final RequestBookModel book = getItem(position);
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_check_request_book_layout, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_admin_check_request_book_layout, parent, false);
             }
             TextView textView = convertView.findViewById(R.id.listText);
             Button button = convertView.findViewById(R.id.checkRequestBookButton);

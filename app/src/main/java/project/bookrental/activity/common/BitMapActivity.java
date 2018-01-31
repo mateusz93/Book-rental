@@ -25,7 +25,7 @@ public class BitMapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_view);
+        setContentView(R.layout.activity_common_image_view);
         Bitmap bitmap = null;
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
         try {

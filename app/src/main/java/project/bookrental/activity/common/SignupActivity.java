@@ -20,9 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 import project.bookrental.R;
 
 /**
- * Created by marcin on 16.10.17.
+ * @author Marcin Korycki
  */
-
 public class SignupActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword;
@@ -33,11 +32,8 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
-
-        //Get Firebase auth instance
+        setContentView(R.layout.activity_common_signup);
         auth = FirebaseAuth.getInstance();
-
         btnSignIn = (Button) findViewById(R.id.sign_in_button);
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
         inputEmail = (EditText) findViewById(R.id.email);

@@ -20,11 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,8 +31,8 @@ import project.bookrental.R;
 import project.bookrental.models.BookModel;
 import project.bookrental.models.BorrowedBookModel;
 import project.bookrental.models.ConfirmationBookModel;
-import project.bookrental.models.ConfirmationType;
 import project.bookrental.models.UserModel;
+import project.bookrental.utils.DataStoreUtils;
 
 /**
  * @author Mateusz Wieczorek
@@ -118,16 +115,7 @@ public class ReturnBookActivity extends AppCompatActivity {
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long id = (Long) fields.get("id");
-                        String author = (String) fields.get("author");
-                        Integer year = ((Long) fields.get("year")).intValue();
-                        String title = (String) fields.get("title");
-                        books.add(new BookModel(id, author, title, year));
-                    }
-                }
+                books.addAll(DataStoreUtils.readBooks(list));
                 isBooksStored = true;
                 filterList();
             }
@@ -147,16 +135,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                 }
                 confirmations.clear();
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long bookId = (Long) fields.get("bookId");
-                        String userId = (String) fields.get("userId");
-                        ConfirmationType type = ConfirmationType.valueOf((String) fields.get("type"));
-                        Date datetime = new Date((Long) ((HashMap) fields.get("datetime")).get("time"));
-                        confirmations.add(new ConfirmationBookModel(bookId, userId, type, datetime));
-                    }
-                }
+                confirmations.clear();
+                confirmations.addAll(DataStoreUtils.readConfirmations(list));
                 isConfirmationStored = true;
                 filterList();
             }
@@ -174,17 +154,9 @@ public class ReturnBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                borrowedBooks.clear();
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long bookId = (Long) fields.get("bookId");
-                        String userId = (String) fields.get("userId");
-                        Date datetime = new Date((Long) ((HashMap) fields.get("borrowDate")).get("time"));
-                        borrowedBooks.add(new BorrowedBookModel(bookId, userId, datetime));
-                    }
-                }
+                borrowedBooks.clear();
+                borrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(list));
                 isBorrowedBooksStored = true;
                 filterList();
             }
@@ -204,16 +176,7 @@ public class ReturnBookActivity extends AppCompatActivity {
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 users.clear();
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        String uId = (String) fields.get("uid");
-                        String email = (String) fields.get("email");
-                        String displayName = (String) fields.get("displayName");
-                        String phoneNumber = (String) fields.get("phoneNumber");
-                        users.add(new UserModel(uId, email, displayName, phoneNumber));
-                    }
-                }
+                users.addAll(DataStoreUtils.readUsers(list));
                 isUsersStored = true;
                 filterList();
             }

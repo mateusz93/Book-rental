@@ -30,7 +30,7 @@ public class RequestBookActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_request_new_book);
+        setContentView(R.layout.activity_student_request_new_book);
         authorEditText = (EditText) findViewById(R.id.RequestBookAuthorEditText);
         titleEditText = (EditText) findViewById(R.id.RequestBookTitleEditText);
         yearEditText = (EditText) findViewById(R.id.RequestBookYearEditText);
@@ -59,7 +59,7 @@ public class RequestBookActivity extends AppCompatActivity {
                     validationErrors.put("year", "Expected year from range 1000 <= year <= " + currentYear);
                 } else if (validationErrors.size() == 0) {
                     final BookModel book = new BookModel(author, title, year);
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final FirebaseDatabase database = FirebaseDatabase.getInstance();
                     final DatabaseReference myRef = database.getReference("request_books");
                     final DatabaseReference counter = database.getReference("counter");
                     counter.addListenerForSingleValueEvent(new ValueEventListener() {

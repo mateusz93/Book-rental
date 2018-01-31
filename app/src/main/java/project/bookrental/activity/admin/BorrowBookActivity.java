@@ -30,6 +30,7 @@ import project.bookrental.R;
 import project.bookrental.models.BookModel;
 import project.bookrental.models.BorrowedBookModel;
 import project.bookrental.models.UserModel;
+import project.bookrental.utils.DataStoreUtils;
 
 /**
  * @author Mateusz Wieczorek
@@ -41,6 +42,10 @@ public class BorrowBookActivity extends AppCompatActivity {
     private final List<BookModel> books = new ArrayList<>();
     private final List<UserModel> users = new ArrayList<>();
     private final List<BorrowedBookModel> listOfBorrowedBooks = new ArrayList<>();
+
+    private boolean isBooksStored = false;
+    private boolean isBorrowedBooksStored = false;
+    private boolean isUsersStored = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,10 @@ public class BorrowBookActivity extends AppCompatActivity {
     }
 
     private void filterList(String title, String email) {
+        if (!isBooksStored || !isBorrowedBooksStored || !isUsersStored) {
+            return;
+        }
+
         List<String> bookViews = new ArrayList<>();
         for (BorrowedBookModel borrowedBookModel : listOfBorrowedBooks) {
             UserModel userModel = null;
@@ -119,16 +128,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long id = (Long) fields.get("id");
-                        String author = (String) fields.get("author");
-                        Integer year = ((Long) fields.get("year")).intValue();
-                        String title = (String) fields.get("title");
-                        books.add(new BookModel(id, author, title, year));
-                    }
-                }
+                books.addAll(DataStoreUtils.readBooks(list));
+                isBooksStored = true;
                 filterList(titleEditText.getText().toString(), emailEditText.getText().toString());
             }
 
@@ -145,17 +146,10 @@ public class BorrowBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                listOfBorrowedBooks.clear();
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        Long bookId = (Long) fields.get("bookId");
-                        String userId = (String) fields.get("userId");
-                        Date datetime = new Date((Long) ((HashMap) fields.get("borrowDate")).get("time"));
-                        listOfBorrowedBooks.add(new BorrowedBookModel(bookId, userId, datetime));
-                    }
-                }
+                listOfBorrowedBooks.clear();
+                listOfBorrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(list));
+                isBorrowedBooksStored = true;
                 filterList(titleEditText.getText().toString(), emailEditText.getText().toString());
             }
 
@@ -174,16 +168,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 users.clear();
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Object field : list) {
-                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
-                        String uId = (String) fields.get("uid");
-                        String email = (String) fields.get("email");
-                        String displayName = (String) fields.get("displayName");
-                        String phoneNumber = (String) fields.get("phoneNumber");
-                        users.add(new UserModel(uId, email, displayName, phoneNumber));
-                    }
-                }
+                users.addAll(DataStoreUtils.readUsers(list));
+                isUsersStored = true;
                 filterList(titleEditText.getText().toString(), emailEditText.getText().toString());
             }
 

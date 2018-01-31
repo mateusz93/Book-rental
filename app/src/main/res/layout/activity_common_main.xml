@@ -110,7 +110,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:background="@color/colorPrimaryDark"
-                android:text="@string/borrowBook"
+                android:text="@string/borrowedBooks"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
 

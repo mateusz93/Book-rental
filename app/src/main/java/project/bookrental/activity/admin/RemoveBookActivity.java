@@ -23,37 +23,31 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import project.bookrental.R;
 import project.bookrental.models.BookModel;
-import project.bookrental.models.BorrowedBookModel;
+import project.bookrental.utils.DataStoreUtils;
 
 
 /**
- * Created by marcin on 14.10.17.
+ * @author Marcin Korycki
  */
-
 public class RemoveBookActivity extends AppCompatActivity {
 
-    EditText authorEditText, titleEditText, yearEditText;
-    ListView listView;
-    ProgressBar progressBar;
-    List<BookModel> listOfBooks = new ArrayList<>();
-    List<BookModel> filteredListOfBooks = new ArrayList<>();
+    private EditText authorEditText, titleEditText, yearEditText;
+    private ListView listView;
+    private ProgressBar progressBar;
+    private final List<BookModel> listOfBooks = new ArrayList<>();
+    private final List<BookModel> filteredListOfBooks = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_remove_book);
+        setContentView(R.layout.activity_admin_remove_book);
         authorEditText = (EditText) findViewById(R.id.RemoveBookAuthorEditText);
         authorEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -62,7 +56,7 @@ public class RemoveBookActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterList(s.toString(),titleEditText.getText().toString(),yearEditText.getText().toString());
+                filterList(s.toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
             }
 
             @Override
@@ -77,7 +71,7 @@ public class RemoveBookActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterList(authorEditText.getText().toString(),s.toString(),yearEditText.getText().toString());
+                filterList(authorEditText.getText().toString(), s.toString(), yearEditText.getText().toString());
             }
 
             @Override
@@ -92,7 +86,7 @@ public class RemoveBookActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterList(authorEditText.getText().toString(),titleEditText.getText().toString(),s.toString());
+                filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), s.toString());
             }
 
             @Override
@@ -107,8 +101,8 @@ public class RemoveBookActivity extends AppCompatActivity {
 
     private void filterList(String author, String title, String year) {
         filteredListOfBooks.clear();
-        for(BookModel book : listOfBooks){
-            if(book.getAuthor().contains(author) && book.getTitle().contains(title) && book.getYear().toString().contains(year)){
+        for (BookModel book : listOfBooks) {
+            if (book.getAuthor().contains(author) && book.getTitle().contains(title) && book.getYear().toString().contains(year)) {
                 filteredListOfBooks.add(book);
             }
         }
@@ -117,30 +111,17 @@ public class RemoveBookActivity extends AppCompatActivity {
     }
 
     void getAllBooksFromDatabase() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("books");
+        final DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("books");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Object value = dataSnapshot.getValue();
-                Collection<Map<String,Object>> books = new ArrayList<>();
-                if(value instanceof HashMap) {
-                    books = ((HashMap<String,Map<String,Object>>) value).values();
-                } else if(value instanceof List){
-                    books = (List<Map<String,Object>>)value;
-                } else {
-                    System.out.println("Error! RemoveBookActivity -> getAllBooksFromDatabase -> onDataChangeValue -> value = " + value);
+                if (dataSnapshot.getValue() == null) {
+                    return;
                 }
+                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 listOfBooks.clear();
-                for (Map<String, Object> fields : books) {
-                    if (fields == null) continue;
-                    Long id = (Long) fields.get("id");
-                    String author = (String) fields.get("author");
-                    Integer year = ((Long) fields.get("year")).intValue();
-                    String title = (String) fields.get("title");
-                    listOfBooks.add(new BookModel(id, author, title, year));
-                }
-                filterList(authorEditText.getText().toString(),titleEditText.getText().toString(),yearEditText.getText().toString());
+                listOfBooks.addAll(DataStoreUtils.readBooks(list));
+                filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
                 progressBar.setVisibility(View.GONE);
             }
 
@@ -152,7 +133,7 @@ public class RemoveBookActivity extends AppCompatActivity {
     }
 
     private class BookAdapter extends ArrayAdapter<BookModel> {
-        public BookAdapter(Context context, List<BookModel> books) {
+        BookAdapter(Context context, List<BookModel> books) {
             super(context, 0, books);
         }
 
@@ -160,7 +141,7 @@ public class RemoveBookActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             final BookModel book = getItem(position);
             if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_remove_row_layout, parent, false);
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.activity_admin_remove_row_layout, parent, false);
             }
             TextView textView = convertView.findViewById(R.id.listText);
             Button button = convertView.findViewById(R.id.removeBookButton);
@@ -214,7 +195,6 @@ public class RemoveBookActivity extends AppCompatActivity {
                     });
                 }
             });
-            // Return the completed view to render on screen
             return convertView;
         }
     }

@@ -31,6 +31,9 @@ import project.bookrental.activity.student.BorrowBookActivity;
 import project.bookrental.activity.student.RequestBookActivity;
 import project.bookrental.activity.student.ReturnBookActivity;
 
+/**
+ * @author Marcin Korycki
+ */
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth.AuthStateListener authListener;
@@ -39,11 +42,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        //get firebase auth instance
+        setContentView(R.layout.activity_common_main);
         auth = FirebaseAuth.getInstance();
-
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -175,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                     menu.removeView(findViewById(R.id.addBookButton));
                     menu.removeView(findViewById(R.id.removeBookButton));
                     menu.removeView(findViewById(R.id.checkRequestBookButton));
-                    //menu.removeView(findViewById(R.id.confirmButton));
                 }
                 menu.setVisibility(View.VISIBLE);
             }
