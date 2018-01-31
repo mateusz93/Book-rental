@@ -46,4 +46,6 @@
     <string name="AdminReturnBookFilterHint">Filter by email</string>
     <string name="BorrowBookSubmit">Borrow</string>
     <string name="ConfirmBorrowBookSubmit">Confirm</string>
+    <string name="ReserveBookSubmit">Reserve</string>
+    <string name="ReserveBookCancel">Cancel</string>
 </resources>

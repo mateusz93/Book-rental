@@ -42,6 +42,7 @@ import project.bookrental.models.BookModel;
 import project.bookrental.models.BorrowedBookModel;
 import project.bookrental.models.ConfirmationBookModel;
 import project.bookrental.models.ConfirmationType;
+import project.bookrental.models.ReserveBookModel;
 
 /**
  * @author Mateusz Wieczorek
@@ -56,7 +57,7 @@ public class BorrowBookActivity extends AppCompatActivity {
     private final List<BookModel> filteredBorrowBook = new ArrayList<>();
     private final List<ConfirmationBookModel> confirmationBookModels = new ArrayList<>();
     private final List<BorrowedBookModel> borrowedBooks = new ArrayList<>();
-
+    private final List<Long> reservedBooksIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,6 +264,46 @@ public class BorrowBookActivity extends AppCompatActivity {
             }
         });
 
+        final DatabaseReference reservedBooksRepository = FirebaseDatabase.getInstance().getReference("reserved_books");
+        reservedBooksRepository.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    return;
+                }
+                final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                List<Object> list = Arrays.asList((((HashMap)dataSnapshot.getValue()).values().toArray()));
+                if (CollectionUtils.isNotEmpty(list)) {
+                    final List<Long> toRemove = new ArrayList<>();
+                    reservedBooksIds.clear();
+                    for(Object field : list) {
+                        HashMap<String, Object> fields = (HashMap<String, Object>) field;
+                        String uid = (String) fields.get("userId");
+                        Date expireTime = new Date();
+                        expireTime.setTime((Long)((HashMap<String,Object>)fields.get("borrowDate")).get("time"));
+                        if (expireTime.after(new Date())) {
+                            if (!uid.equals(userId)) toRemove.add((Long) fields.get("bookId"));
+                            else reservedBooksIds.add((Long) fields.get("bookId"));
+                        }
+                    }
+                    for (Long bookId : toRemove) {
+                        Iterator<BookModel> it = filteredBorrowBook.iterator();
+                        while(it.hasNext()) {
+                            final BookModel model = it.next();
+                            if (Objects.equals(model.getId(), bookId)) {
+                                it.remove();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Err:reservedBooks:", databaseError.toException());
+            }
+        });
     }
 
     private class BorrowBookAdapter extends ArrayAdapter<BookModel> {
@@ -279,6 +320,7 @@ public class BorrowBookActivity extends AppCompatActivity {
             }
             TextView textView = convertView.findViewById(R.id.borrowBookListText);
             Button button = convertView.findViewById(R.id.borrowBookButton);
+            final Button reserveButton = convertView.findViewById(R.id.reserveBookButton);
             textView.setText(book != null ? book.toString() : "");
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -301,6 +343,48 @@ public class BorrowBookActivity extends AppCompatActivity {
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                             Log.d("err:BorrowBook:183", databaseError.getMessage());
+                        }
+                    });
+                }
+            });
+            if (reservedBooksIds.contains(book.getId())) reserveButton.setText(R.string.ReserveBookCancel);
+            else reserveButton.setText(R.string.ReserveBookSubmit);
+            reserveButton.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    final ReserveBookModel model = new ReserveBookModel();
+                    model.setUserId(userId);
+                    model.setBookId(book.getId());
+                    Date now = new Date();
+                    if (!reservedBooksIds.contains(book.getId())) now.setTime(now.getTime() + 24 * 60 * 60 * 1000);
+                    model.setBorrowDate(now);
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    final DatabaseReference myRef = database.getReference("reserved_books");
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            myRef.removeEventListener(this);
+                            myRef.child(String.valueOf(model.getBookId())).setValue(model);
+
+                            if (!reservedBooksIds.contains(book.getId()))
+                            {
+                                reservedBooksIds.add(book.getId());
+                                reserveButton.setText(R.string.ReserveBookCancel);
+                                Toast.makeText(getApplicationContext(), "Book reserved! It will expire after 24 hours!", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                reservedBooksIds.remove(book.getId());
+                                reserveButton.setText(R.string.ReserveBookSubmit);
+                                Toast.makeText(getApplicationContext(), "Book reservation cancelled!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d("err:ReserveBook:274", databaseError.getMessage());
                         }
                     });
                 }

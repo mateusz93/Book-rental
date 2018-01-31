@@ -2,7 +2,6 @@
 /* SAFARI BOOKS GIVES US ALL BOOKS WHICH CAN BE AVAILABLE IN LIBRARY. LIBRARY HAVE LIST OF AVAILABLE BOOKS (ONE OF SAFARI BOOK API WITH UNIQUE ID)
 -fetching list all books from SafariBook API
 -add button to fetch list all books from SafariBook API
--reserve book (24h) / cancel reservation
 -handling with destroyed books
 -how many copy of given book is in the library (add,remove)
 -unique qr code per student // maybe it would be not necessary
@@ -22,6 +21,7 @@ DONE:
 -Borrowing and returning books functionality (which student, which book, from, to etc.) - to improve
 -access to book library (checking which books are available, which aren't available)
 -giving id for every book, every book has own qrcode
+-reserve book (24h) / cancel reservation
 
 
 /*
