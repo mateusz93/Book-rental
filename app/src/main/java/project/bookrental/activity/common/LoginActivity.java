@@ -109,13 +109,31 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    if(auth.getCurrentUser().isEmailVerified()) {
-                                        addToDbIfNotExist(auth.getCurrentUser());
+                                    final FirebaseUser firebaseUser = auth.getCurrentUser();
+                                    if(firebaseUser.isEmailVerified()) {
+                                        addToDbIfNotExist(firebaseUser);
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(intent);
                                         finish();
                                     } else {
                                         Toast.makeText(LoginActivity.this, getString(R.string.auth_not_verified), Toast.LENGTH_LONG).show();
+                                        firebaseUser.sendEmailVerification()
+                                                .addOnCompleteListener(LoginActivity.this, new OnCompleteListener() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task task) {
+                                                        // Re-enable button
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(LoginActivity.this,
+                                                                    "Verification email resent to " + firebaseUser.getEmail(),
+                                                                    Toast.LENGTH_SHORT).show();
+                                                            auth.signOut();
+                                                        } else {
+                                                            Toast.makeText(LoginActivity.this,
+                                                                    "Failed to send verification email.",
+                                                                    Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
                                     }
                                 }
                             }

@@ -3,7 +3,7 @@
     <string name="addBook">Add</string>
     <string name="requestBook">Request new</string>
     <string name="checkRequestBook">Check requests</string>
-    <string name="removeBook">Remove</string>
+    <string name="removeBook">Remove/Destroy</string>
     <string name="borrowBook">Borrow</string>
     <string name="borrowedBooks">Borrowed</string>
     <string name="returnBook">Return</string>
