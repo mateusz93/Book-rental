@@ -227,7 +227,7 @@ public class ReturnBookActivity extends AppCompatActivity {
                                     Long time = (Long) borrowDateMap.get("time");
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(new Date(time));
-                                    calendar.add(Calendar.DAY_OF_YEAR, 1);
+                                    calendar.add(Calendar.DAY_OF_YEAR, 14);
                                     calendar.getTime();
                                     if(new Date().getTime() > calendar.getTime().getTime()) {
                                         long latenessInMillis = Math.abs(new Date().getTime() - calendar.getTime().getTime());
