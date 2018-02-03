@@ -212,6 +212,7 @@ public class BorrowBookActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
+                    isConfirmationStored = true;
                     return;
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
@@ -233,6 +234,7 @@ public class BorrowBookActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() == null) {
+                    isBorrowedBooksStored = true;
                     return;
                 }
                 List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));

@@ -1,8 +1,10 @@
 package project.bookrental.activity.admin;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,13 +27,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,6 +47,10 @@ import project.bookrental.utils.DataStoreUtils;
  */
 public class ReturnBookActivity extends AppCompatActivity {
 
+    public static final int MILLIS_IN_SECOND = 1000;
+    public static final int SECONDS_IN_MINUTE = 60;
+    public static final int MINUTES_IN_HOUR = 60;
+    public static final int HOURS_IN_DAY = 24;
     private FirebaseAuth auth;
     private EditText adminReturnBookFilter;
     private ListView listView;
@@ -213,7 +217,37 @@ public class ReturnBookActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             myRef.removeEventListener(this);
-                            myRef.child(book.getBookModel().getId().toString()).removeValue();
+                            final DatabaseReference bookRef = myRef.child(book.getBookModel().getId().toString());
+                            bookRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    bookRef.removeEventListener(this);
+                                    HashMap<String, Object> map = (HashMap<String,Object>) dataSnapshot.getValue();
+                                    HashMap<String,Object> borrowDateMap = (HashMap <String,Object>) map.get("borrowDate");
+                                    Long time = (Long) borrowDateMap.get("time");
+                                    Calendar calendar = Calendar.getInstance();
+                                    calendar.setTime(new Date(time));
+                                    calendar.add(Calendar.DAY_OF_YEAR, 1);
+                                    calendar.getTime();
+                                    if(new Date().getTime() > calendar.getTime().getTime()) {
+                                        long latenessInMillis = Math.abs(new Date().getTime() - calendar.getTime().getTime());
+                                        int latenessInDays = (int)Math.ceil((float)latenessInMillis/ MILLIS_IN_SECOND / SECONDS_IN_MINUTE / MINUTES_IN_HOUR / HOURS_IN_DAY);
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                        builder.setTitle("Lateness!")
+                                                .setMessage("Lateness in returning book: "+latenessInDays+" DAYS!\nPenalty to pay: "+latenessInDays*5+"zl")
+                                                .setNeutralButton("OK!", new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        bookRef.removeValue();
+                                                    }
+                                                }).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Log.w("Err:returnBook:", databaseError.toException());
+                                }
+                            });
                             Toast.makeText(getApplicationContext(), "Book returned", Toast.LENGTH_SHORT).show();
                         }
 
