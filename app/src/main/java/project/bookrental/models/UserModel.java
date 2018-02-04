@@ -10,6 +10,8 @@ public class UserModel {
     private String displayName;
     private String phoneNumber;
 
+    public UserModel(){};
+
     public UserModel(String uId, String email, String displayName, String phoneNumber) {
         this.uid = uId;
         this.email = email;

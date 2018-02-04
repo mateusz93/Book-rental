@@ -21,6 +21,7 @@
         <activity android:name=".activity.common.ResetPasswordActivity" />
         <activity android:name=".activity.common.SignupActivity" />
         <activity android:name=".activity.common.BitMapActivity"/>
+        <activity android:name=".activity.common.CheckStateBookActivity"/>
         <activity android:name=".activity.student.BorrowBookActivity"/>
         <activity android:name=".activity.student.RequestBookActivity"/>
         <activity android:name=".activity.student.ReturnBookActivity"/>

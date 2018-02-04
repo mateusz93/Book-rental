@@ -49,4 +49,5 @@
     <string name="ConfirmBorrowBookSubmit">Confirm</string>
     <string name="ReserveBookSubmit">Reserve</string>
     <string name="ReserveBookCancel">Cancel</string>
+    <string name="checkStateBook">Check state book</string>
 </resources>

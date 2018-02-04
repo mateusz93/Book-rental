@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 R.id.adminBorrowBookButton,
                 R.id.adminConfirmBorrowBookButton,
                 R.id.checkRequestBookButton,
+                R.id.checkStateBookButton,
                 R.id.aboutButton,
                 R.id.sign_out};
         for (int i = 0; i < buttonNames.length; i++) {
@@ -105,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case R.id.removeBookButton:
                             startActivity(new Intent(MainActivity.this, RemoveBookActivity.class));
+                            break;
+                        case R.id.checkStateBookButton:
+                            startActivity(new Intent(MainActivity.this, CheckStateBookActivity.class));
                             break;
                         case R.id.borrowBookButton:
                             startActivity(new Intent(MainActivity.this, BorrowBookActivity.class));
