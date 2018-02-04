@@ -19,7 +19,7 @@ DONE:
 -handling with destroyed books (its the same what remove books)
 -to pay for overdue - every borrow book action should put date with deadline for return book. Only admin can click that user return book. When admin
 click it, ten should logic calculate if was there overdue, and if yes should add overdue on user account which can be removed only by admin.
-
+-checking book state by scan qrcode functionality.
 
 /*
 Example data for testing: SafariBooks Downloader
@@ -31,7 +31,4 @@ reserve the book (24h), check account of borrowed and reserved books, cancel res
 -admin -> how many copy of given book is in the library (add, remove), confirm borrowing and returnig books, 
 General requirements:
 giving id for every book, every book has qr code, discuss payments in app
-
-  
-we have to think about some errors like admin give student wrong book (the same title but with wrong id/qrcode).
 */
