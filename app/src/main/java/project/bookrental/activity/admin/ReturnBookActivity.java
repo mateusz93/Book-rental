@@ -240,6 +240,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                                                         bookRef.removeValue();
                                                     }
                                                 }).show();
+                                    } else {
+                                        bookRef.removeValue();
                                     }
                                 }
 
