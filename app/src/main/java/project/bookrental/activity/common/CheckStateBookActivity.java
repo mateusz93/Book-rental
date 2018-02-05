@@ -27,7 +27,8 @@ import java.util.List;
 
 import project.bookrental.R;
 import project.bookrental.models.BorrowedBookModel;
-import project.bookrental.models.ReserveBookModel;
+import project.bookrental.models.ConfirmationBookModel;
+import project.bookrental.models.ConfirmationType;
 import project.bookrental.models.UserModel;
 
 
@@ -92,7 +93,7 @@ public class CheckStateBookActivity extends AppCompatActivity {
                                         }
                                     }).show();
                         } else {
-                            final DatabaseReference booksRef = FirebaseDatabase.getInstance().getReference("reserved_books");
+                            final DatabaseReference booksRef = FirebaseDatabase.getInstance().getReference("confirmations");
                             booksRef.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -104,13 +105,9 @@ public class CheckStateBookActivity extends AppCompatActivity {
                                     HashMap<String,Object> book = (HashMap<String,Object>) mapEntries.get(bookId);
                                     if(book!=null){
                                         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                                        Date date = dataSnapshot.child(bookId).getValue(ReserveBookModel.class).getBorrowDate();
-                                        Calendar calendar = Calendar.getInstance();
-                                        calendar.setTime(date);
-                                        calendar.add(Calendar.DAY_OF_YEAR,14);
-                                        Date untilDate = calendar.getTime();
+                                        Date date = dataSnapshot.child(bookId).getValue(ConfirmationBookModel.class).getDatetime();
                                         builder.setTitle("Book already reserved!")
-                                                .setMessage("This book is already reserved by" + usersMap.get(book.get("userId")).getEmail() +" until " + untilDate)
+                                                .setMessage("This book is already reserved by" + usersMap.get(book.get("userId")).getEmail() +" until " + date)
                                                 .setPositiveButton("Continue scanning!", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         qrScan.initiateScan();
@@ -146,11 +143,15 @@ public class CheckStateBookActivity extends AppCompatActivity {
                                                     })
                                                     .setNeutralButton("Reserve!", new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
-                                                            ReserveBookModel reserveBookModel = new ReserveBookModel();
-                                                            reserveBookModel.setBookId(Long.valueOf(bookId));
-                                                            reserveBookModel.setBorrowDate(new Date());
-                                                            reserveBookModel.setUserId(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                            booksRef.child(bookId).setValue(reserveBookModel);
+
+                                                            final ConfirmationBookModel confirmationBookModel = new ConfirmationBookModel();
+                                                            confirmationBookModel.setUserId(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                            confirmationBookModel.setBookId(Long.valueOf(bookId));
+                                                            confirmationBookModel.setType(ConfirmationType.BORROW);
+                                                            Date now = new Date();
+                                                            now.setTime(now.getTime() + 24 * 60 * 60 * 1000);
+                                                            confirmationBookModel.setDatetime(now);
+                                                            booksRef.child(bookId).setValue(confirmationBookModel);
                                                             Toast.makeText(getApplicationContext(), "Book reserved", Toast.LENGTH_SHORT).show();
                                                             finish();
                                                         }

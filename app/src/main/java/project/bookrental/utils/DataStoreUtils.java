@@ -12,7 +12,6 @@ import project.bookrental.models.BorrowedBookModel;
 import project.bookrental.models.ConfirmationBookModel;
 import project.bookrental.models.ConfirmationType;
 import project.bookrental.models.RequestBookModel;
-import project.bookrental.models.ReserveBookModel;
 import project.bookrental.models.UserModel;
 
 /**
@@ -66,6 +65,7 @@ public class DataStoreUtils {
 
     public static List<ConfirmationBookModel> readConfirmations(List<Object> list) {
         List<ConfirmationBookModel> confirmations = new ArrayList<>();
+        Date now = new Date();
         if (CollectionUtils.isNotEmpty(list)) {
             for (Object field : list) {
                 HashMap<String, Object> fields = (HashMap<String, Object>) field;
@@ -73,7 +73,7 @@ public class DataStoreUtils {
                 String userId = (String) fields.get("userId");
                 ConfirmationType type = ConfirmationType.valueOf((String) fields.get("type"));
                 Date datetime = new Date((Long) ((HashMap) fields.get("datetime")).get("time"));
-                confirmations.add(new ConfirmationBookModel(bookId, userId, type, datetime));
+                if (datetime.after(now)) confirmations.add(new ConfirmationBookModel(bookId, userId, type, datetime));
             }
         }
         return confirmations;

@@ -18,15 +18,7 @@
         android:id="@+id/reserveBookButton"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.1"
-        android:text="Reserve" />
-
-    <Button
-        android:id="@+id/borrowBookButton"
-        android:layout_width="48dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.1"
-        android:text="@string/BorrowBookSubmit">
-    </Button>
+        android:layout_weight="0.2"
+        android:text="@string/ReserveBookSubmit" />
 
 </LinearLayout>
