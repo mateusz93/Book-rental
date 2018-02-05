@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Bookrental.iml" filepath="$PROJECT_DIR$/Bookrental.iml" />
+      <module fileurl="file://C:\Users\Mateusz\Projects\book-rental\Bookrental.iml" filepath="C:\Users\Mateusz\Projects\book-rental\Bookrental.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/bookrental.iml" filepath="$PROJECT_DIR$/bookrental.iml" />
+      <module fileurl="file://$PROJECT_DIR$/book-rental.iml" filepath="$PROJECT_DIR$/book-rental.iml" />
+      <module fileurl="file://C:\Users\Mateusz\Projects\book-rental\bookrental.iml" filepath="C:\Users\Mateusz\Projects\book-rental\bookrental.iml" />
     </modules>
   </component>
 </project>
