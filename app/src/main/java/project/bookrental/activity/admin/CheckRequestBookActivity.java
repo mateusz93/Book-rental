@@ -20,8 +20,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import project.bookrental.R;
@@ -53,9 +51,8 @@ public class CheckRequestBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 listOfRequests.clear();
-                listOfRequests.addAll(DataStoreUtils.readRequest(list));
+                listOfRequests.addAll(DataStoreUtils.readRequest(dataSnapshot.getValue()));
                 RequestBookAdapter requestBookAdapter = new RequestBookAdapter(CheckRequestBookActivity.this, listOfRequests);
                 listView.setAdapter(requestBookAdapter);
             }

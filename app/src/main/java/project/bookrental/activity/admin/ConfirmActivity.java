@@ -88,9 +88,8 @@ public class ConfirmActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                books.addAll(DataStoreUtils.readBooks(list));
+                books.addAll(DataStoreUtils.readBooks(dataSnapshot.getValue()));
                 isBooksStored = true;
                 filterList();
             }
@@ -108,9 +107,8 @@ public class ConfirmActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 confirmations.clear();
-                confirmations.addAll(DataStoreUtils.readConfirmations(list));
+                confirmations.addAll(DataStoreUtils.readConfirmations(dataSnapshot.getValue()));
                 isConfirmationStored = true;
                 filterList();
             }
@@ -128,9 +126,8 @@ public class ConfirmActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 users.clear();
-                users.addAll(DataStoreUtils.readUsers(list));
+                users.addAll(DataStoreUtils.readUsers(dataSnapshot.getValue()));
                 isUsersStored = true;
                 filterList();
             }

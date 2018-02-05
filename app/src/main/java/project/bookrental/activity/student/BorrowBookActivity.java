@@ -27,9 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -158,7 +156,8 @@ public class BorrowBookActivity extends AppCompatActivity {
             boolean isConfirm = false;
             for (ConfirmationBookModel confirmationBookModel : confirmationBookModels) {
                 if (confirmationBookModel.getBookId().equals(model.getId())) {
-                    if (!confirmationBookModel.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) isConfirm = true;
+                    if (!confirmationBookModel.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                        isConfirm = true;
                     break;
                 }
             }
@@ -189,9 +188,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                books.addAll(DataStoreUtils.readBooks(list));
+                books.addAll(DataStoreUtils.readBooks(dataSnapshot.getValue()));
                 isBooksStored = true;
                 filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
                 progressBar.setVisibility(View.GONE);
@@ -211,9 +209,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                     isConfirmationStored = true;
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 confirmationBookModels.clear();
-                confirmationBookModels.addAll(DataStoreUtils.readConfirmations(list));
+                confirmationBookModels.addAll(DataStoreUtils.readConfirmations(dataSnapshot.getValue()));
                 confirmationBookIds.clear();
                 for (ConfirmationBookModel conf : confirmationBookModels) {
                     confirmationBookIds.add(conf.getBookId());
@@ -237,9 +234,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                     isBorrowedBooksStored = true;
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 borrowedBooks.clear();
-                borrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(list));
+                borrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(dataSnapshot.getValue()));
                 isBorrowedBooksStored = true;
                 filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
                 progressBar.setVisibility(View.GONE);

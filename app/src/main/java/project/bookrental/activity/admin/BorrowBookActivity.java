@@ -5,11 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,12 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.apache.commons.collections4.CollectionUtils;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -126,9 +119,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                books.addAll(DataStoreUtils.readBooks(list));
+                books.addAll(DataStoreUtils.readBooks(dataSnapshot.getValue()));
                 isBooksStored = true;
                 filterList(titleEditText.getText().toString(), emailEditText.getText().toString());
             }
@@ -146,9 +138,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 listOfBorrowedBooks.clear();
-                listOfBorrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(list));
+                listOfBorrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(dataSnapshot.getValue()));
                 isBorrowedBooksStored = true;
                 filterList(titleEditText.getText().toString(), emailEditText.getText().toString());
             }
@@ -166,9 +157,8 @@ public class BorrowBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 users.clear();
-                users.addAll(DataStoreUtils.readUsers(list));
+                users.addAll(DataStoreUtils.readUsers(dataSnapshot.getValue()));
                 isUsersStored = true;
                 filterList(titleEditText.getText().toString(), emailEditText.getText().toString());
             }

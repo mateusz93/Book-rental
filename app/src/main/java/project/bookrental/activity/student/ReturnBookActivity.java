@@ -21,8 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -113,9 +111,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                books.addAll(DataStoreUtils.readBooks(list));
+                books.addAll(DataStoreUtils.readBooks(dataSnapshot.getValue()));
                 isBooksStored = true;
                 filterList();
             }
@@ -134,9 +131,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                     return;
                 }
                 confirmations.clear();
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 confirmations.clear();
-                confirmations.addAll(DataStoreUtils.readConfirmations(list));
+                confirmations.addAll(DataStoreUtils.readConfirmations(dataSnapshot.getValue()));
                 isConfirmationStored = true;
                 filterList();
             }
@@ -154,9 +150,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 borrowedBooks.clear();
-                borrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(list));
+                borrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(dataSnapshot.getValue()));
                 isBorrowedBooksStored = true;
                 filterList();
             }
@@ -174,9 +169,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 users.clear();
-                users.addAll(DataStoreUtils.readUsers(list));
+                users.addAll(DataStoreUtils.readUsers(dataSnapshot.getValue()));
                 isUsersStored = true;
                 filterList();
             }

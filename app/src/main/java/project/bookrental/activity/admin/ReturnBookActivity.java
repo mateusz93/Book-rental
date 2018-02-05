@@ -136,9 +136,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 books.clear();
-                books.addAll(DataStoreUtils.readBooks(list));
+                books.addAll(DataStoreUtils.readBooks(dataSnapshot.getValue()));
                 isBooksStored = true;
                 filterList(adminReturnBookFilter.getText().toString());
             }
@@ -156,9 +155,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 listOfBorrowedBooks.clear();
-                listOfBorrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(list));
+                listOfBorrowedBooks.addAll(DataStoreUtils.readBorrowedBooks(dataSnapshot.getValue()));
                 isBorrowedBooksStored = true;
                 filterList(adminReturnBookFilter.getText().toString());
             }
@@ -176,9 +174,8 @@ public class ReturnBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 users.clear();
-                users.addAll(DataStoreUtils.readUsers(list));
+                users.addAll(DataStoreUtils.readUsers(dataSnapshot.getValue()));
                 isUsersStored = true;
                 filterList(adminReturnBookFilter.getText().toString());
             }

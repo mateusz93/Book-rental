@@ -24,8 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import project.bookrental.R;
@@ -118,9 +116,8 @@ public class RemoveBookActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 listOfBooks.clear();
-                listOfBooks.addAll(DataStoreUtils.readBooks(list));
+                listOfBooks.addAll(DataStoreUtils.readBooks(dataSnapshot.getValue()));
                 filterList(authorEditText.getText().toString(), titleEditText.getText().toString(), yearEditText.getText().toString());
                 progressBar.setVisibility(View.GONE);
             }

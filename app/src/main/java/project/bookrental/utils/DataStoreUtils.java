@@ -3,6 +3,7 @@ package project.bookrental.utils;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +20,14 @@ import project.bookrental.models.UserModel;
  */
 public class DataStoreUtils {
 
-    public static List<BookModel> readBooks(List<Object> list) {
+    public static List<BookModel> readBooks(Object list) {
+        final List<Object> listOfBooks = (List) list;
         List<BookModel> books = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (Object field : list) {
+        if (CollectionUtils.isNotEmpty(listOfBooks)) {
+            for (Object field : listOfBooks) {
+                if (field == null) {
+                    continue;
+                }
                 HashMap<String, Object> fields = (HashMap<String, Object>) field;
                 Long id = (Long) fields.get("id");
                 String author = (String) fields.get("author");
@@ -34,24 +39,34 @@ public class DataStoreUtils {
         return books;
     }
 
-    public static List<BorrowedBookModel> readBorrowedBooks(List<Object> list) {
-        List<BorrowedBookModel> listOfBorrowedBooks = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (Object field : list) {
+    public static List<BorrowedBookModel> readBorrowedBooks(Object list) {
+        //final List<Object> listOfBorrowedBooks = (List) list;
+        final List<Object> listOfBorrowedBooks = Arrays.asList((((HashMap) list).values().toArray()));
+        List<BorrowedBookModel> books = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(listOfBorrowedBooks)) {
+            for (Object field : listOfBorrowedBooks) {
+                if (field == null) {
+                    continue;
+                }
                 HashMap<String, Object> fields = (HashMap<String, Object>) field;
                 Long bookId = (Long) fields.get("bookId");
                 String userId = (String) fields.get("userId");
                 Date datetime = new Date((Long) ((HashMap) fields.get("borrowDate")).get("time"));
-                listOfBorrowedBooks.add(new BorrowedBookModel(bookId, userId, datetime));
+                books.add(new BorrowedBookModel(bookId, userId, datetime));
             }
         }
-        return listOfBorrowedBooks;
+        return books;
     }
 
-    public static List<RequestBookModel> readRequest(List<Object> list) {
+    public static List<RequestBookModel> readRequest(Object list) {
+        //final List<Object> listOfBorrowedBooks = (List) list;
+        final List<Object> listOfBorrowedBooks = Arrays.asList((((HashMap) list).values().toArray()));
         List<RequestBookModel> requests = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (Object field : list) {
+        if (CollectionUtils.isNotEmpty(listOfBorrowedBooks)) {
+            for (Object field : listOfBorrowedBooks) {
+                if (field == null) {
+                    continue;
+                }
                 HashMap<String, Object> fields = (HashMap<String, Object>) field;
                 Long id = (Long) fields.get("id");
                 String author = (String) fields.get("author");
@@ -63,26 +78,36 @@ public class DataStoreUtils {
         return requests;
     }
 
-    public static List<ConfirmationBookModel> readConfirmations(List<Object> list) {
+    public static List<ConfirmationBookModel> readConfirmations(Object list) {
+        //final List<Object> listOfConfirmations = (List) list;
+        final List<Object> listOfConfirmations = Arrays.asList((((HashMap) list).values().toArray()));
         List<ConfirmationBookModel> confirmations = new ArrayList<>();
         Date now = new Date();
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (Object field : list) {
+        if (CollectionUtils.isNotEmpty(listOfConfirmations)) {
+            for (Object field : listOfConfirmations) {
+                if (field == null) {
+                    continue;
+                }
                 HashMap<String, Object> fields = (HashMap<String, Object>) field;
                 Long bookId = (Long) fields.get("bookId");
                 String userId = (String) fields.get("userId");
                 ConfirmationType type = ConfirmationType.valueOf((String) fields.get("type"));
                 Date datetime = new Date((Long) ((HashMap) fields.get("datetime")).get("time"));
-                if (datetime.after(now)) confirmations.add(new ConfirmationBookModel(bookId, userId, type, datetime));
+                if (datetime.after(now))
+                    confirmations.add(new ConfirmationBookModel(bookId, userId, type, datetime));
             }
         }
         return confirmations;
     }
 
-    public static List<UserModel> readUsers(List<Object> list) {
+    public static List<UserModel> readUsers(Object list) {
+        final List<Object> listOfUsers = Arrays.asList((((HashMap) list).values().toArray()));
         List<UserModel> users = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (Object field : list) {
+        if (CollectionUtils.isNotEmpty(listOfUsers)) {
+            for (Object field : listOfUsers) {
+                if (field == null) {
+                    continue;
+                }
                 HashMap<String, Object> fields = (HashMap<String, Object>) field;
                 String uId = (String) fields.get("uid");
                 String email = (String) fields.get("email");

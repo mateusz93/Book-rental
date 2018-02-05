@@ -20,13 +20,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import project.bookrental.R;
 import project.bookrental.models.BookModel;
 import project.bookrental.utils.DataStoreUtils;
+import project.bookrental.utils.FileUtils;
 
 
 /**
@@ -102,8 +101,17 @@ public class ListOfBooksActivity extends AppCompatActivity {
             }
         });
         progressBar = (ProgressBar) findViewById(R.id.ListOfBooksProgressBar);
-        getAllBooksFromDatabase();
 
+//        final FileUtils fileUtils = new FileUtils();
+//        final List<FileUtils.Book> books;
+//        try {
+//            books = fileUtils.readBookFromFile();
+//            readDatabaseFromFileAndSaveInFirebase(books);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        getAllBooksFromDatabase();
     }
 
     private void filterList(String author, String title, String year) {
@@ -129,9 +137,8 @@ public class ListOfBooksActivity extends AppCompatActivity {
                 if (dataSnapshot.getValue() == null) {
                     return;
                 }
-                List<Object> list = Arrays.asList((((HashMap) dataSnapshot.getValue()).values().toArray()));
                 listOfBooks.clear();
-                listOfBooks.addAll(DataStoreUtils.readBooks(list));
+                listOfBooks.addAll(DataStoreUtils.readBooks(dataSnapshot.getValue()));
                 filteredListOfBooks.addAll(listOfBooks);
                 List<String> listForAdapter = new ArrayList<>();
                 for (BookModel book : filteredListOfBooks) {
@@ -148,4 +155,37 @@ public class ListOfBooksActivity extends AppCompatActivity {
             }
         });
     }
-};
+
+    void readDatabaseFromFileAndSaveInFirebase(List<FileUtils.Book> listOfBooks) {
+        final List<FileUtils.Book> books = listOfBooks;
+        final DatabaseReference booksRef = FirebaseDatabase.getInstance().getReference("books");
+        booksRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue() == null) {
+                    return;
+                }
+                long couinter = 10;
+                for (FileUtils.Book b : books) {
+                    try {
+                        final BookModel model = new BookModel(b.getAuthor(), b.getTitle(), Integer.parseInt(b.getYear()));
+                        model.setId(couinter);
+                        booksRef.child(String.valueOf(model.getId())).setValue(model);
+                        couinter++;
+                    } catch (RuntimeException e) {
+
+                    }
+                    if (couinter > 2000) {
+                        break;
+                    }
+                }
+                finish();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w("Err:listofbooks:", databaseError.toException());
+            }
+        });
+    }
+}
